@@ -1,2 +1,6 @@
-fastapi
-uvicorn
+greenlet==3.3.2
+psycopg==3.3.3
+psycopg-binary==3.3.3
+SQLAlchemy==2.0.48
+typing_extensions==4.15.0
+tzdata==2025.3
