@@ -1,2 +1,10 @@
-# sales-operation-system
-Internal system to track sales operations lifecycle: order → shipment → invoice
+# Sales Operation System
+
+Initial project scaffold only.
+
+## Structure
+
+- `backend/app`: backend source packages
+- `frontend/src`: frontend source folders
+
+No dependencies or business logic have been added yet.
