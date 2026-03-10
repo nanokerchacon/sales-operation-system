@@ -1,0 +1,41 @@
+from fastapi import APIRouter
+from sqlalchemy.orm import selectinload
+
+from app.database.session import SessionLocal
+from app.models.order import Order, OrderItem
+from app.schemas.order import OrderCreate, OrderRead
+
+
+router = APIRouter()
+
+
+@router.post("", response_model=OrderRead)
+def create_order(order: OrderCreate) -> Order:
+    db = SessionLocal()
+    try:
+        db_order = Order(client_id=order.client_id, status=order.status or "draft")
+        db.add(db_order)
+        db.flush()
+
+        for item in order.items:
+            db.add(OrderItem(order_id=db_order.id, **item.model_dump()))
+
+        db.commit()
+
+        return (
+            db.query(Order)
+            .options(selectinload(Order.items))
+            .filter(Order.id == db_order.id)
+            .first()
+        )
+    finally:
+        db.close()
+
+
+@router.get("", response_model=list[OrderRead])
+def list_orders() -> list[Order]:
+    db = SessionLocal()
+    try:
+        return db.query(Order).options(selectinload(Order.items)).all()
+    finally:
+        db.close()
