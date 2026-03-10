@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from app.database.session import SessionLocal
 from app.models.delivery import DeliveryItem, DeliveryNote
-from app.models.order import OrderItem
+from app.models.order import Order, OrderItem
 from app.schemas.delivery import DeliveryNoteCreate, DeliveryNoteRead
 
 
@@ -57,6 +57,25 @@ def create_delivery(delivery: DeliveryNoteCreate) -> DeliveryNote:
             requested_quantities[item.order_item_id] = (
                 requested_quantities.get(item.order_item_id, 0.0) + requested_quantity
             )
+
+        db.flush()
+
+        total_ordered_quantity = (
+            db.query(func.coalesce(func.sum(OrderItem.quantity), 0.0))
+            .filter(OrderItem.order_id == delivery.order_id)
+            .scalar()
+        )
+        total_delivered_quantity = (
+            db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
+            .join(OrderItem, OrderItem.id == DeliveryItem.order_item_id)
+            .filter(OrderItem.order_id == delivery.order_id)
+            .scalar()
+        )
+
+        if total_delivered_quantity == total_ordered_quantity:
+            order = db.get(Order, delivery.order_id)
+            if order is not None:
+                order.status = "completed"
 
         db.commit()
 
