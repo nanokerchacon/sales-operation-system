@@ -1,9 +1,16 @@
 from fastapi import FastAPI
 from sqlalchemy import text
 
-from app.database.session import engine
+from app.api.clients import router as clients_router
+from app.database.session import Base, engine
+from app.models.client import Client
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def create_tables() -> None:
+    Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
@@ -17,3 +24,6 @@ def db_test() -> dict[str, str]:
         connection.execute(text("SELECT 1"))
 
     return {"database": "connected"}
+
+
+app.include_router(clients_router, prefix="/clients", tags=["clients"])
