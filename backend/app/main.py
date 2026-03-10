@@ -2,8 +2,10 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from app.api.clients import router as clients_router
+from app.api.products import router as products_router
 from app.database.session import Base, engine
 from app.models.client import Client
+from app.models.product import Product
 
 app = FastAPI()
 
@@ -27,3 +29,4 @@ def db_test() -> dict[str, str]:
 
 
 app.include_router(clients_router, prefix="/clients", tags=["clients"])
+app.include_router(products_router, prefix="/products", tags=["products"])
