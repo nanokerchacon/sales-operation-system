@@ -1,12 +1,14 @@
 export const statusTranslation = {
   draft: "Borrador",
   completed: "Completado",
-  delivered_not_invoiced: "Entregado no facturado",
-  partially_invoiced: "Facturación parcial",
-  low: "Riesgo bajo",
-  medium: "Riesgo medio",
-  high: "Riesgo alto",
-  none: "Sin riesgo",
+  ok: "Completo",
+  pending_delivery: "Pendiente de entrega",
+  pending_invoice: "Pendiente de facturar",
+  invoice_over_delivery: "Error de facturación",
+  low: "Baja",
+  medium: "Media",
+  high: "Alta",
+  none: "Sin incidencias",
 };
 
 export function translateStatus(status) {

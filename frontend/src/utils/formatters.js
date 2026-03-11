@@ -28,3 +28,13 @@ export function formatDateTime(date) {
     timeStyle: "short",
   }).format(date);
 }
+
+export function formatDate(value) {
+  if (!value) {
+    return "-";
+  }
+
+  return new Intl.DateTimeFormat("es-ES", {
+    dateStyle: "medium",
+  }).format(new Date(value));
+}

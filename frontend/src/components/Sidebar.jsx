@@ -1,4 +1,4 @@
-import { navigationItems } from "../utils/mappers";
+import { navigationItems, navigateTo } from "../utils/mappers";
 
 function GridIcon() {
   return (
@@ -12,6 +12,8 @@ function GridIcon() {
 }
 
 export default function Sidebar() {
+  const pathname = window.location.pathname;
+
   return (
     <aside className="flex min-h-screen w-[272px] flex-col border-r border-slate-800 bg-slate-950 text-slate-100">
       <div className="border-b border-slate-800 px-6 py-6">
@@ -39,17 +41,20 @@ export default function Sidebar() {
             <li key={item.key}>
               <button
                 type="button"
+                onClick={() => navigateTo(item.href)}
                 className={[
                   "flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm font-medium transition-colors",
-                  item.active
+                  pathname === item.href && item.href
                     ? "bg-slate-900 text-white shadow-soft"
-                    : "text-slate-400 hover:bg-slate-900/70 hover:text-slate-100",
+                    : item.href
+                      ? "text-slate-400 hover:bg-slate-900/70 hover:text-slate-100"
+                      : "cursor-default text-slate-500",
                 ].join(" ")}
               >
                 <span
                   className={[
                     "flex h-9 w-9 items-center justify-center rounded-md border",
-                    item.active
+                    pathname === item.href && item.href
                       ? "border-slate-700 bg-slate-800 text-slate-100"
                       : "border-slate-800 bg-slate-900 text-slate-500",
                   ].join(" ")}
@@ -57,7 +62,7 @@ export default function Sidebar() {
                   <GridIcon />
                 </span>
                 <span className="flex-1">{item.label}</span>
-                {item.active ? <span className="h-2 w-2 rounded-full bg-slate-300" /> : null}
+                {pathname === item.href && item.href ? <span className="h-2 w-2 rounded-full bg-slate-300" /> : null}
               </button>
             </li>
           ))}
@@ -68,7 +73,7 @@ export default function Sidebar() {
         <div className="rounded-md border border-slate-800 bg-slate-900/70 px-4 py-4">
           <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Estado del sistema</p>
           <p className="mt-2 text-sm font-semibold text-slate-100">Panel operativo en línea</p>
-          <p className="mt-1 text-sm text-slate-400">Visibilidad ejecutiva sobre pedidos, facturación y riesgo.</p>
+          <p className="mt-1 text-sm text-slate-400">Visibilidad ejecutiva sobre pedidos, facturacion y control operativo.</p>
         </div>
       </div>
     </aside>

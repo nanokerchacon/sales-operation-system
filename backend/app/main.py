@@ -10,6 +10,7 @@ from app.api.operations import router as operations_router
 from app.api.risk import router as risk_router
 from app.api.orders import router as orders_router
 from app.api.products import router as products_router
+from app.api.status import router as status_router
 from app.database.session import Base, engine
 from app.models.client import Client
 from app.models.delivery import DeliveryItem, DeliveryNote
@@ -54,6 +55,7 @@ app.include_router(dashboard_router, prefix="/dashboard", tags=["dashboard"])
 app.include_router(deliveries_router, prefix="/deliveries", tags=["deliveries"])
 app.include_router(invoices_router, prefix="/invoices", tags=["invoices"])
 app.include_router(operations_router, prefix="/operations", tags=["operations"])
+app.include_router(status_router, prefix="/status", tags=["status"])
 app.include_router(risk_router, prefix="/risk", tags=["risk"])
 app.include_router(orders_router, prefix="/orders", tags=["orders"])
 app.include_router(products_router, prefix="/products", tags=["products"])

@@ -15,7 +15,7 @@ export default {
           steel: "#526277",
           accent: "#1f3a5f",
         },
-        risk: {
+        priority: {
           low: "#5f6f86",
           medium: "#b7791f",
           high: "#b42318",

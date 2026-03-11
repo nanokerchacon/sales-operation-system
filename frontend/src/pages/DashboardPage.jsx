@@ -1,16 +1,18 @@
 import AgingInvoicesChart from "../components/charts/AgingInvoicesChart";
-import RevenueRiskChart from "../components/charts/RevenueRiskChart";
+import PendingRevenueChart from "../components/charts/PendingRevenueChart";
 import DataTable from "../components/DataTable";
 import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
 import Header from "../components/Header";
 import KpiCard from "../components/KpiCard";
 import LoadingState from "../components/LoadingState";
-import RiskBadge from "../components/RiskBadge";
+import OperationalStatusBadge from "../components/OperationalStatusBadge";
+import PriorityBadge from "../components/PriorityBadge";
 import SectionCard from "../components/SectionCard";
+import StatusSummaryCards from "../components/StatusSummaryCards";
 import useDashboardData from "../hooks/useDashboardData";
 import { formatCurrency, formatInteger, formatNumber } from "../utils/formatters";
-import { getDisplayStatus } from "../utils/mappers";
+import { getDisplayStatus, navigateTo } from "../utils/mappers";
 
 function buildKpis(operations) {
   if (!operations) {
@@ -25,14 +27,14 @@ function buildKpis(operations) {
       tone: "default",
     },
     {
-      title: "Pedidos con riesgo",
-      value: formatInteger(operations.orders_with_risk),
-      detail: "Pedidos con desviación de entrega o facturación.",
+      title: "Pedidos con incidencias",
+      value: formatInteger(operations.orders_with_issues),
+      detail: "Pedidos con desviaciones de entrega o facturacion.",
       tone: "alert",
     },
     {
-      title: "Pedidos sin riesgo",
-      value: formatInteger(operations.orders_without_risk),
+      title: "Pedidos correctos",
+      value: formatInteger(operations.orders_without_issues),
       detail: "Pedidos dentro de la operativa esperada.",
       tone: "success",
     },
@@ -51,8 +53,8 @@ function buildKpis(operations) {
   ];
 }
 
-function buildRevenueSummary(revenueAtRisk) {
-  return revenueAtRisk.reduce(
+function buildRevenueSummary(pendingRevenue) {
+  return pendingRevenue.reduce(
     (summary, item) => {
       const amount = Number(item.amount_pending_invoice || 0);
       summary.total += amount;
@@ -101,9 +103,22 @@ function SummaryMetric({ label, value, accent = false }) {
 export default function DashboardPage() {
   const { data, loading, error, lastUpdated } = useDashboardData();
   const kpis = buildKpis(data.operations);
-  const revenueSummary = buildRevenueSummary(data.revenueAtRisk);
+  const revenueSummary = buildRevenueSummary(data.pendingRevenue);
 
   const workQueueColumns = [
+    {
+      key: "order_number",
+      header: "Numero",
+      render: (row) => (
+        <button
+          type="button"
+          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
+        >
+          {row.order_number}
+        </button>
+      ),
+    },
     {
       key: "client_name",
       header: "Cliente",
@@ -120,47 +135,52 @@ export default function DashboardPage() {
       render: (row) => (
         <div>
           <p className="font-medium text-slate-900">Pedido #{row.order_id}</p>
-          <p className="text-xs text-slate-500">{getDisplayStatus(row.status)}</p>
+          <p className="text-xs text-slate-500">{getDisplayStatus(row.order_status)}</p>
         </div>
       ),
     },
     {
+      key: "delivered_quantity",
+      header: "Entregado",
+      render: (row) => formatNumber(row.delivered_quantity),
+    },
+    {
+      key: "invoiced_quantity",
+      header: "Facturado",
+      render: (row) => formatNumber(row.invoiced_quantity),
+    },
+    {
+      key: "pending_delivery_quantity",
+      header: "Pend. entrega",
+      render: (row) => formatNumber(row.pending_delivery_quantity),
+    },
+    {
       key: "pending_invoice_quantity",
-      header: "Cantidad pendiente",
+      header: "Pend. factura",
       render: (row) => formatNumber(row.pending_invoice_quantity),
-    },
-    {
-      key: "amount_pending_invoice",
-      header: "Importe pendiente",
-      render: (row) => formatCurrency(row.amount_pending_invoice),
-    },
-    {
-      key: "days_since_last_delivery",
-      header: "Días desde última entrega",
-      render: (row) => `${formatInteger(row.days_since_last_delivery)} días`,
     },
     {
       key: "status",
       header: "Estado",
-      render: (row) => <span className="text-sm font-medium text-slate-700">{getDisplayStatus(row.status)}</span>,
+      render: (row) => <OperationalStatusBadge value={row.status} />,
     },
     {
-      key: "risk_level_es",
-      header: "Riesgo",
-      render: (row) => <RiskBadge value={row.risk_level_es} />,
+      key: "priority",
+      header: "Prioridad",
+      render: (row) => <PriorityBadge value={row.priority} />,
     },
   ];
 
-  const clientRiskColumns = [
+  const clientIncidentsColumns = [
     {
       key: "client_name",
       header: "Cliente",
       render: (row) => <span className="font-medium text-slate-900">{row.client_name}</span>,
     },
     {
-      key: "orders_with_risk",
-      header: "Pedidos con riesgo",
-      render: (row) => formatInteger(row.orders_with_risk),
+      key: "orders_with_issues",
+      header: "Pedidos con incidencias",
+      render: (row) => formatInteger(row.orders_with_issues),
     },
     {
       key: "total_pending_invoice_quantity",
@@ -173,9 +193,9 @@ export default function DashboardPage() {
       render: (row) => formatCurrency(row.total_pending_invoice_amount),
     },
     {
-      key: "highest_risk_level_es",
-      header: "Nivel de riesgo",
-      render: (row) => <RiskBadge value={row.highest_risk_level_es} />,
+      key: "highest_priority_level_es",
+      header: "Prioridad",
+      render: (row) => <PriorityBadge value={row.highest_priority_level} />,
     },
   ];
 
@@ -188,7 +208,15 @@ export default function DashboardPage() {
     {
       key: "order_id",
       header: "Pedido",
-      render: (row) => `#${row.order_id}`,
+      render: (row) => (
+        <button
+          type="button"
+          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
+        >
+          {row.order_number || `#${row.order_id}`}
+        </button>
+      ),
     },
     {
       key: "amount_pending_invoice",
@@ -196,13 +224,13 @@ export default function DashboardPage() {
       render: (row) => formatCurrency(row.amount_pending_invoice),
     },
     {
-      key: "risk_status_es",
+      key: "status_es",
       header: "Situación",
-      render: (row) => <span className="text-sm text-slate-600">{row.risk_status_es}</span>,
+      render: (row) => <OperationalStatusBadge value={row.status} />,
     },
   ];
 
-  const riskOrdersColumns = [
+  const incidentOrdersColumns = [
     {
       key: "client_name",
       header: "Cliente",
@@ -211,7 +239,15 @@ export default function DashboardPage() {
     {
       key: "order_id",
       header: "Pedido",
-      render: (row) => `#${row.order_id}`,
+      render: (row) => (
+        <button
+          type="button"
+          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
+        >
+          {row.order_number || `#${row.order_id}`}
+        </button>
+      ),
     },
     {
       key: "pending_invoice_quantity",
@@ -219,9 +255,9 @@ export default function DashboardPage() {
       render: (row) => formatNumber(row.pending_invoice_quantity),
     },
     {
-      key: "risk_status_es",
-      header: "Riesgo",
-      render: (row) => <span className="text-sm text-slate-600">{row.risk_status_es}</span>,
+      key: "status_es",
+      header: "Incidencia",
+      render: (row) => <OperationalStatusBadge value={row.status} />,
     },
   ];
 
@@ -229,7 +265,7 @@ export default function DashboardPage() {
     <>
       <Header
         title="Dashboard"
-        subtitle="Visión consolidada de operaciones, facturación pendiente y riesgo comercial."
+        subtitle="Visión consolidada de operaciones, facturación pendiente y control operativo."
         lastUpdated={lastUpdated}
       />
 
@@ -244,6 +280,19 @@ export default function DashboardPage() {
             : kpis.map((kpi) => <KpiCard key={kpi.title} {...kpi} />)}
         </section>
 
+        <section className="mt-6">
+          <SectionCard
+            title="Resumen de estados operativos"
+            subtitle="Distribución real del flujo pedido, entrega y facturación."
+          >
+            {loading ? (
+              <LoadingState lines={4} />
+            ) : (
+              <StatusSummaryCards summary={data.orderStatusSummary} formatValue={formatInteger} />
+            )}
+          </SectionCard>
+        </section>
+
         <section className="mt-6 grid gap-6 2xl:grid-cols-2">
           <SectionCard
             title="Facturación pendiente por antigüedad"
@@ -253,10 +302,10 @@ export default function DashboardPage() {
           </SectionCard>
 
           <SectionCard
-            title="Riesgo financiero acumulado"
+            title="Facturacion pendiente acumulada"
             subtitle="Exposición pendiente de facturación consolidada por tramos de antigüedad."
           >
-            {loading ? <LoadingState lines={5} /> : <RevenueRiskChart summary={revenueSummary} />}
+            {loading ? <LoadingState lines={5} /> : <PendingRevenueChart summary={revenueSummary} />}
           </SectionCard>
         </section>
 
@@ -264,7 +313,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <SectionCard
               title="Cola operativa"
-              subtitle="Pedidos entregados con impacto pendiente de facturación, ordenados por severidad."
+              subtitle="Pedidos priorizados por estado operativo y desviaciones entre entrega y facturación."
             >
               <DataTable
                 columns={workQueueColumns}
@@ -272,21 +321,21 @@ export default function DashboardPage() {
                 loading={loading}
                 rowKey="order_id"
                 emptyTitle="Sin cola operativa"
-                emptyDescription="No existen pedidos pendientes de facturación en este momento."
+                emptyDescription="No existen pedidos para monitorizar en este momento."
               />
             </SectionCard>
 
             <SectionCard
-              title="Pedidos en riesgo"
-              subtitle="Pedidos con desviación entre entregas e importes facturados."
+              title="Pedidos con incidencias"
+              subtitle="Pedidos con desviaciones entre entrega y facturación."
             >
               <DataTable
-                columns={riskOrdersColumns}
-                rows={data.riskOrders.slice(0, 6)}
+                columns={incidentOrdersColumns}
+                rows={data.ordersWithIncidents.slice(0, 6)}
                 loading={loading}
                 rowKey="order_id"
-                emptyTitle="Sin pedidos en riesgo"
-                emptyDescription="No se han detectado pedidos con incidencias de riesgo."
+                emptyTitle="Sin pedidos con incidencias"
+                emptyDescription="No se han detectado incidencias operativas en pedidos."
                 compact
               />
             </SectionCard>
@@ -294,12 +343,12 @@ export default function DashboardPage() {
 
           <div className="space-y-6">
             <SectionCard
-              title="Resumen financiero en riesgo"
-              subtitle="Vista agregada desde revenue-at-risk con distribución por antigüedad."
+              title="Resumen de facturacion pendiente"
+              subtitle="Vista agregada de facturación pendiente con distribución por antigüedad."
             >
               {loading ? (
                 <LoadingState lines={4} />
-              ) : data.revenueAtRisk.length ? (
+              ) : data.pendingRevenue.length ? (
                 <div className="space-y-4">
                   <SummaryMetric
                     label="Total pendiente de facturar"
@@ -364,16 +413,16 @@ export default function DashboardPage() {
             </SectionCard>
 
             <SectionCard
-              title="Riesgo por cliente"
-              subtitle="Clientes con mayor exposición operativa y financiera."
+              title="Incidencias por cliente"
+              subtitle="Clientes con mayor carga operativa y facturación pendiente."
             >
               <DataTable
-                columns={clientRiskColumns}
-                rows={data.clientRisk.slice(0, 6)}
+                columns={clientIncidentsColumns}
+                rows={data.clientsWithIncidents.slice(0, 6)}
                 loading={loading}
                 rowKey="client_id"
-                emptyTitle="Sin clientes en riesgo"
-                emptyDescription="No existen clientes con riesgo acumulado."
+                emptyTitle="Sin clientes con incidencias"
+                emptyDescription="No existen clientes con incidencias acumuladas."
                 compact
               />
             </SectionCard>

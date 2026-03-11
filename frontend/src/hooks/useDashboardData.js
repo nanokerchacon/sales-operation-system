@@ -3,11 +3,12 @@ import { dashboardApi } from "../services/api";
 
 const initialState = {
   operations: null,
-  riskOrders: [],
+  orderStatusSummary: null,
+  ordersWithIncidents: [],
   pendingInvoices: [],
-  revenueAtRisk: [],
+  pendingRevenue: [],
   workQueue: [],
-  clientRisk: [],
+  clientsWithIncidents: [],
   agingInvoices: null,
 };
 
@@ -27,19 +28,21 @@ export default function useDashboardData() {
       try {
         const [
           operations,
-          riskOrders,
+          orderStatusSummary,
+          ordersWithIncidents,
           pendingInvoices,
-          revenueAtRisk,
+          pendingRevenue,
           workQueue,
-          clientRisk,
+          clientsWithIncidents,
           agingInvoices,
         ] = await Promise.all([
           dashboardApi.getOperations(),
-          dashboardApi.getRiskOrders(),
+          dashboardApi.getOrderStatusSummary(),
+          dashboardApi.getOrdersWithIncidents(),
           dashboardApi.getPendingInvoices(),
-          dashboardApi.getRevenueAtRisk(),
+          dashboardApi.getPendingRevenue(),
           dashboardApi.getWorkQueue(),
-          dashboardApi.getClientRisk(),
+          dashboardApi.getClientsWithIncidents(),
           dashboardApi.getAgingInvoices(),
         ]);
 
@@ -49,11 +52,12 @@ export default function useDashboardData() {
 
         setData({
           operations,
-          riskOrders,
+          orderStatusSummary,
+          ordersWithIncidents,
           pendingInvoices,
-          revenueAtRisk,
+          pendingRevenue,
           workQueue,
-          clientRisk,
+          clientsWithIncidents,
           agingInvoices,
         });
         setLastUpdated(new Date());
