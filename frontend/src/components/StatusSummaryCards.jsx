@@ -10,7 +10,7 @@ function buildCards(summary) {
       key: "ok",
       title: summary.labels_es.ok,
       value: summary.ok,
-      detail: "Pedidos con entrega y facturación alineadas.",
+      detail: "Pedidos con entrega y facturación aceptada alineadas.",
       tone: "success",
     },
     {
@@ -24,8 +24,15 @@ function buildCards(summary) {
       key: "pending_invoice",
       title: summary.labels_es.pending_invoice,
       value: summary.pending_invoice,
-      detail: "Pedidos entregados pendientes de facturar.",
+      detail: "Pedidos entregados sin factura emitida o aceptada suficiente.",
       tone: "default",
+    },
+    {
+      key: "invoice_pending_acceptance",
+      title: summary.labels_es.invoice_pending_acceptance,
+      value: summary.invoice_pending_acceptance,
+      detail: "Pedidos con factura emitida en espera de aceptación.",
+      tone: "muted",
     },
     {
       key: "invoice_over_delivery",
@@ -39,7 +46,7 @@ function buildCards(summary) {
 
 export default function StatusSummaryCards({ summary, formatValue }) {
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
       {buildCards(summary).map((card) => (
         <KpiCard
           key={card.key}

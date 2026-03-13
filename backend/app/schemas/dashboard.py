@@ -5,6 +5,7 @@ class OrderStatusSummaryLabels(BaseModel):
     ok: str
     pending_delivery: str
     pending_invoice: str
+    invoice_pending_acceptance: str
     invoice_over_delivery: str
 
 
@@ -12,6 +13,7 @@ class OrderStatusSummary(BaseModel):
     ok: int
     pending_delivery: int
     pending_invoice: int
+    invoice_pending_acceptance: int
     invoice_over_delivery: int
     labels_es: OrderStatusSummaryLabels
 
@@ -24,7 +26,12 @@ class OperationsDashboardLabels(BaseModel):
     total_pending_invoice_quantity: str
     pending_delivery_orders: str
     pending_invoice_orders: str
+    pending_acceptance_orders: str
     invoice_over_delivery_orders: str
+    accepted_invoice_orders: str
+    pending_acceptance_invoice_orders: str
+    total_accepted_invoice_quantity: str
+    total_pending_acceptance_quantity: str
 
 
 class OperationsDashboardSummary(BaseModel):
@@ -35,6 +42,7 @@ class OperationsDashboardSummary(BaseModel):
     total_pending_invoice_quantity: float
     pending_delivery_orders: int
     pending_invoice_orders: int
+    pending_acceptance_orders: int
     invoice_over_delivery_orders: int
     labels_es: OperationsDashboardLabels
     orders_with_risk: int
@@ -42,6 +50,10 @@ class OperationsDashboardSummary(BaseModel):
     delivered_not_invoiced_orders: int
     partially_invoiced_orders: int
     invoiced_over_delivered_orders: int
+    accepted_invoice_orders: int
+    pending_acceptance_invoice_orders: int
+    total_accepted_invoice_quantity: float
+    total_pending_acceptance_quantity: float
 
 
 class OrderOperationalStatus(BaseModel):
@@ -55,12 +67,16 @@ class OrderOperationalStatus(BaseModel):
     ordered_quantity: float
     delivered_quantity: float
     invoiced_quantity: float
+    issued_quantity: float
+    pending_acceptance_quantity: float
     pending_delivery_quantity: float
     pending_invoice_quantity: float
     has_issue: bool
     risk_status: str
     risk_status_es: str
     has_risk: bool
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class PendingInvoiceItem(BaseModel):
@@ -74,10 +90,14 @@ class PendingInvoiceItem(BaseModel):
     ordered_quantity: float
     delivered_quantity: float
     invoiced_quantity: float
+    issued_quantity: float
+    pending_acceptance_quantity: float
     pending_invoice_quantity: float
     amount_pending_invoice: float
     risk_status: str
     risk_status_es: str
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class PendingRevenueItem(BaseModel):
@@ -90,6 +110,8 @@ class PendingRevenueItem(BaseModel):
     status_es: str
     delivered_quantity: float
     invoiced_quantity: float
+    issued_quantity: float
+    pending_acceptance_quantity: float
     pending_invoice_quantity: float
     amount_pending_invoice: float
     days_since_last_delivery: int
@@ -99,6 +121,8 @@ class PendingRevenueItem(BaseModel):
     risk_level_es: str
     risk_status: str
     risk_status_es: str
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class WorkQueueItem(BaseModel):
@@ -109,6 +133,8 @@ class WorkQueueItem(BaseModel):
     order_status: str
     delivered_quantity: float
     invoiced_quantity: float
+    issued_quantity: float
+    pending_acceptance_quantity: float
     pending_delivery_quantity: float
     pending_invoice_quantity: float
     status: str
@@ -119,6 +145,8 @@ class WorkQueueItem(BaseModel):
     days_since_last_delivery: int
     priority_level: str
     priority_level_es: str
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class ClientIncidentsItem(BaseModel):

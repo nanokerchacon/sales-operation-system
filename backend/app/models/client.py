@@ -8,6 +8,7 @@ class Client(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    legacy_code = Column(String, unique=True, index=True)
     tax_id = Column(String, unique=True, index=True)
     address = Column(String)
     phone = Column(String)

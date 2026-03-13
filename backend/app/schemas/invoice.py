@@ -23,6 +23,9 @@ class InvoiceItemRead(BaseModel):
 
 class InvoiceCreate(BaseModel):
     order_id: int
+    source_folder: str | None = None
+    invoice_type: str | None = None
+    invoice_status: str | None = None
     items: list[InvoiceItemCreate]
 
     model_config = ConfigDict(from_attributes=True)
@@ -31,6 +34,9 @@ class InvoiceCreate(BaseModel):
 class InvoiceRead(BaseModel):
     id: int
     order_id: int
+    source_folder: str | None = None
+    invoice_type: str
+    invoice_status: str
     invoice_date: datetime
     created_at: datetime
     items: list[InvoiceItemRead]

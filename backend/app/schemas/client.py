@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ClientCreate(BaseModel):
     name: str
+    legacy_code: str | None = None
     tax_id: str | None = None
     address: str | None = None
     phone: str | None = None
@@ -14,6 +15,7 @@ class ClientCreate(BaseModel):
 class ClientRead(BaseModel):
     id: int
     name: str
+    legacy_code: str | None = None
     tax_id: str | None = None
     address: str | None = None
     phone: str | None = None

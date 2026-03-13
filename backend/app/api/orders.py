@@ -15,12 +15,17 @@ router = APIRouter()
 def create_order(order: OrderCreate) -> Order:
     db = SessionLocal()
     try:
-        db_order = Order(client_id=order.client_id, status=order.status or "draft")
+        order_payload = order.model_dump(exclude={"items"}, exclude_none=True)
+        order_payload.setdefault("status", "draft")
+        order_payload.setdefault("source", "erp")
+
+        db_order = Order(**order_payload)
         db.add(db_order)
         db.flush()
 
         for item in order.items:
-            db.add(OrderItem(order_id=db_order.id, **item.model_dump()))
+            item_payload = item.model_dump(exclude_none=True)
+            db.add(OrderItem(order_id=db_order.id, **item_payload))
 
         db.commit()
 

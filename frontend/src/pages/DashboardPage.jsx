@@ -1,5 +1,4 @@
 import AgingInvoicesChart from "../components/charts/AgingInvoicesChart";
-import PendingRevenueChart from "../components/charts/PendingRevenueChart";
 import DataTable from "../components/DataTable";
 import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
@@ -29,7 +28,7 @@ function buildKpis(operations) {
     {
       title: "Pedidos con incidencias",
       value: formatInteger(operations.orders_with_issues),
-      detail: "Pedidos con desviaciones de entrega o facturacion.",
+      detail: "Pedidos con desviaciones de entrega, emisión o aceptación.",
       tone: "alert",
     },
     {
@@ -45,9 +44,9 @@ function buildKpis(operations) {
       tone: "muted",
     },
     {
-      title: "Cantidad pendiente de facturar",
+      title: "Pendiente de cierre documental",
       value: formatNumber(operations.total_pending_invoice_quantity),
-      detail: "Unidades entregadas pendientes de facturación.",
+      detail: "Unidades entregadas aún no aceptadas documentalmente.",
       tone: "default",
     },
   ];
@@ -146,8 +145,13 @@ export default function DashboardPage() {
     },
     {
       key: "invoiced_quantity",
-      header: "Facturado",
+      header: "Aceptado",
       render: (row) => formatNumber(row.invoiced_quantity),
+    },
+    {
+      key: "pending_acceptance_quantity",
+      header: "Pend. aceptación",
+      render: (row) => formatNumber(row.pending_acceptance_quantity),
     },
     {
       key: "pending_delivery_quantity",
@@ -155,14 +159,14 @@ export default function DashboardPage() {
       render: (row) => formatNumber(row.pending_delivery_quantity),
     },
     {
-      key: "pending_invoice_quantity",
-      header: "Pend. factura",
-      render: (row) => formatNumber(row.pending_invoice_quantity),
-    },
-    {
       key: "status",
       header: "Estado",
       render: (row) => <OperationalStatusBadge value={row.status} />,
+    },
+    {
+      key: "invoice_document_status",
+      header: "Estado doc.",
+      render: (row) => <OperationalStatusBadge value={row.invoice_document_status} />,
     },
     {
       key: "priority",
@@ -224,6 +228,11 @@ export default function DashboardPage() {
       render: (row) => formatCurrency(row.amount_pending_invoice),
     },
     {
+      key: "invoice_document_status",
+      header: "Estado doc.",
+      render: (row) => <OperationalStatusBadge value={row.invoice_document_status} />,
+    },
+    {
       key: "status_es",
       header: "Situación",
       render: (row) => <OperationalStatusBadge value={row.status} />,
@@ -255,6 +264,11 @@ export default function DashboardPage() {
       render: (row) => formatNumber(row.pending_invoice_quantity),
     },
     {
+      key: "invoice_document_status",
+      header: "Estado doc.",
+      render: (row) => <OperationalStatusBadge value={row.invoice_document_status} />,
+    },
+    {
       key: "status_es",
       header: "Incidencia",
       render: (row) => <OperationalStatusBadge value={row.status} />,
@@ -283,7 +297,7 @@ export default function DashboardPage() {
         <section className="mt-6">
           <SectionCard
             title="Resumen de estados operativos"
-            subtitle="Distribución real del flujo pedido, entrega y facturación."
+            subtitle="Distribución real del flujo pedido, entrega, emisión y aceptación documental."
           >
             {loading ? (
               <LoadingState lines={4} />
@@ -296,16 +310,43 @@ export default function DashboardPage() {
         <section className="mt-6 grid gap-6 2xl:grid-cols-2">
           <SectionCard
             title="Facturación pendiente por antigüedad"
-            subtitle="Distribución ejecutiva de importes pendientes según el envejecimiento de facturas."
+            subtitle="Distribución ejecutiva de importes pendientes según el envejecimiento documental."
           >
             {loading ? <LoadingState lines={5} /> : <AgingInvoicesChart agingInvoices={data.agingInvoices} />}
           </SectionCard>
 
           <SectionCard
-            title="Facturacion pendiente acumulada"
-            subtitle="Exposición pendiente de facturación consolidada por tramos de antigüedad."
+            title="Estado documental de facturas"
+            subtitle="Separación mínima entre aceptación definitiva y facturas electrónicas aún pendientes."
           >
-            {loading ? <LoadingState lines={5} /> : <PendingRevenueChart summary={revenueSummary} />}
+            {loading ? (
+              <LoadingState lines={4} />
+            ) : data.operations ? (
+              <div className="grid gap-3 md:grid-cols-2">
+                <SummaryMetric
+                  label="Pedidos con factura aceptada"
+                  value={formatInteger(data.operations.accepted_invoice_orders)}
+                  accent
+                />
+                <SummaryMetric
+                  label="Pedidos pendientes de aceptación"
+                  value={formatInteger(data.operations.pending_acceptance_invoice_orders)}
+                />
+                <SummaryMetric
+                  label="Cantidad aceptada"
+                  value={formatNumber(data.operations.total_accepted_invoice_quantity)}
+                />
+                <SummaryMetric
+                  label="Cantidad pendiente aceptación"
+                  value={formatNumber(data.operations.total_pending_acceptance_quantity)}
+                />
+              </div>
+            ) : (
+              <EmptyState
+                title="Sin estado documental"
+                description="No hay datos documentales agregados para mostrar."
+              />
+            )}
           </SectionCard>
         </section>
 
@@ -313,9 +354,10 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <SectionCard
               title="Cola operativa"
-              subtitle="Pedidos priorizados por estado operativo y desviaciones entre entrega y facturación."
+              subtitle="Pedidos priorizados por estado operativo y documental."
             >
-              <DataTable
+              <div className="operational-queue-table-wrapper w-full overflow-x-auto [&>div]:overflow-visible [&_table]:min-w-[1200px] [&_table]:w-full">
+                <DataTable
                 columns={workQueueColumns}
                 rows={data.workQueue}
                 loading={loading}
@@ -323,11 +365,12 @@ export default function DashboardPage() {
                 emptyTitle="Sin cola operativa"
                 emptyDescription="No existen pedidos para monitorizar en este momento."
               />
+              </div>
             </SectionCard>
 
             <SectionCard
               title="Pedidos con incidencias"
-              subtitle="Pedidos con desviaciones entre entrega y facturación."
+              subtitle="Pedidos con desviaciones entre entrega, facturación y aceptación."
             >
               <DataTable
                 columns={incidentOrdersColumns}
@@ -343,15 +386,15 @@ export default function DashboardPage() {
 
           <div className="space-y-6">
             <SectionCard
-              title="Resumen de facturacion pendiente"
-              subtitle="Vista agregada de facturación pendiente con distribución por antigüedad."
+              title="Resumen de facturación pendiente"
+              subtitle="Vista agregada del cierre documental pendiente con distribución por antigüedad."
             >
               {loading ? (
                 <LoadingState lines={4} />
               ) : data.pendingRevenue.length ? (
                 <div className="space-y-4">
                   <SummaryMetric
-                    label="Total pendiente de facturar"
+                    label="Total pendiente de cierre"
                     value={formatCurrency(revenueSummary.total)}
                     accent
                   />
@@ -365,7 +408,7 @@ export default function DashboardPage() {
               ) : (
                 <EmptyState
                   title="Sin resumen financiero"
-                  description="No hay importes pendientes de facturar para mostrar."
+                  description="No hay importes pendientes de cierre documental para mostrar."
                 />
               )}
             </SectionCard>
@@ -399,7 +442,7 @@ export default function DashboardPage() {
 
             <SectionCard
               title="Facturación pendiente prioritaria"
-              subtitle="Pedidos pendientes con mayor importe económico."
+              subtitle="Pedidos pendientes de emisión o aceptación con mayor impacto económico."
             >
               <DataTable
                 columns={pendingInvoiceColumns}
@@ -407,14 +450,14 @@ export default function DashboardPage() {
                 loading={loading}
                 rowKey="order_id"
                 emptyTitle="Sin facturación pendiente"
-                emptyDescription="No existen importes pendientes de facturación."
+                emptyDescription="No existen importes pendientes de cierre documental."
                 compact
               />
             </SectionCard>
 
             <SectionCard
               title="Incidencias por cliente"
-              subtitle="Clientes con mayor carga operativa y facturación pendiente."
+              subtitle="Clientes con mayor carga operativa y cierre documental pendiente."
             >
               <DataTable
                 columns={clientIncidentsColumns}
@@ -432,3 +475,7 @@ export default function DashboardPage() {
     </>
   );
 }
+
+
+
+

@@ -1,0 +1,143 @@
+order_reference,order_document_number,delivery_reference,delivery_document_number,invoice_reference,invoice_document_number,client_name,operational_status,document_status,confidence,matching_rule,notes
+25_594,25_594,,,,,IDOM CONSULTING,confirmed,,,order_only,order_files=1
+26S_1,26S__1,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_10,26S__10,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_2,26S__2,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_3,26S__3,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_4,26S__4,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_5,26S__5,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_6,26S__6,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_7,26S__7,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_8,26S__8,,,,,STOCK,confirmed,,,order_only,order_files=1
+26S_9,26S__9,,,,,STOCK,confirmed,,,order_only,order_files=1
+26_1,26_1,4,4,,,ADIENT CALATORAO,delivered,,high,order_ref_normalized+client_subset,"order_files=1 | matched_ref=26_1,client_normalized_subset,delivery_files=1,delivery_multi_refs=2"
+26_10,26_10,50,50,26_10,EX 18,GESCHMIDT,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_10,client_exact,delivery_files=1,delivery_multi_refs=5 | client_exact,invoice_gap_days=35,invoice_files=1,invoice_status=accepted"
+26_100,26_100,,,,,JORCAR TITANIUM,confirmed,,,order_only,order_files=1
+26_101,26_101,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_102,26_102,,,,,GESTAMP BRASIL STA. ISABEL,confirmed,,,order_only,order_files=1
+26_103,26_103,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_104,26_104,,,,,CERN,confirmed,,,order_only,order_files=1
+26_105,26_105,145,145,,,GESTAMP LINARES,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_105,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_106,26_106,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_107,26_107,,,,,LA FARGA YOURCOPPERSOLUTIONS,confirmed,,,order_only,order_files=1
+26_108,26_108,,,,,VKI,confirmed,,,order_only,order_files=1
+26_109,26_109,,,,,MARGASAM Ltd,confirmed,,,order_only,order_files=1
+26_11,26_11,42,42,26_11,EX 3,PIGUET FRÈRES,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_11,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_110,26_110,,,,,FLINSA,confirmed,,,order_only,order_files=1
+26_111,26_111,,,,,BOSCO TECNOINDUSTRIA,confirmed,,,order_only,order_files=1
+26_112,26_112,,,,,UNIV. DE ZARAGOZA,confirmed,,,order_only,order_files=1
+26_113,26_113,123,123,,,ICN2,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_113,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_114,26_114,,,,,VARAS HARD METAL,confirmed,,,order_only,order_files=1
+26_115,26_115,,,,,ANDERMAN CERAMIQUES,confirmed,,,order_only,order_files=1
+26_116,26_116,,,,,TEKNIA PEDROLA,confirmed,,,order_only,order_files=1
+26_117,26_117,,,,,VARAS HARD METAL,confirmed,,,order_only,order_files=1
+26_118,26_118,,,,,GESTAMP NAVARRA,confirmed,,,order_only,order_files=1
+26_119,26_119,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_12,26_12,,,,,CANCELADO,confirmed,,,order_only,order_files=1
+26_120,26_120,,,,,AQUAJET SYSTEMSpdf,confirmed,,,order_only,order_files=1
+26_121,26_121,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_122,26_122,139,139,,,UNIV. DE ZARAGOZA,delivered,,high,order_ref_normalized+client_subset,"order_files=1 | matched_ref=26_122,client_normalized_subset,delivery_files=1,delivery_multi_refs=3"
+26_123,26_123,,,,,GESTAMP NAVARRA,confirmed,,,order_only,order_files=1
+26_124,26_124,143,143,26_124,N 45,FUNDACIO BOSCH I GIMPERA,invoiced,accepted,high,order_ref_normalized+client_subset | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_124,client_normalized_subset,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=-1,invoice_files=1,invoice_status=accepted"
+26_125,26_125,,,,,ALVAREZ REDONDO,confirmed,,,order_only,order_files=1
+26_126,26_126,147,147,,,GESTAMP NAVARRA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_126,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_127,26_127,,,,,GESTAMP NAVARRA,confirmed,,,order_only,order_files=1
+26_128,26_128,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_129,26_129,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_13,26_13,31,31,26_13,IC 10,MOTTAZ INDUSTRIE,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_13,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=1,invoice_files=1,invoice_status=accepted"
+26_130,26_130,,,,,GESCHMIDT,confirmed,,,order_only,order_files=1
+26_131,26_131,,,,,GALICIA AUTOESTAMPACIÓN,confirmed,,,order_only,order_files=1
+26_14,26_14,103,103,,,VARAS HARD METAL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_14,client_exact,delivery_files=1,delivery_multi_refs=6"
+26_15,26_15,103,103,,,VARAS HARD METAL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_15,client_exact,delivery_files=1,delivery_multi_refs=6"
+26_16,26_16,103,103,,,VARAS HARD METAL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_16,client_exact,delivery_files=1,delivery_multi_refs=6"
+26_17,26_17,,,,,SHILOH OLOFSTRÖM,confirmed,,,order_only,order_files=1
+26_18,26_18,68,68,,,AQUAJET SYSTEMS,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_18,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_19,26_19,,,,,SCIENTA OMICRON,confirmed,,,order_only,order_files=1
+26_2,26_2,,,,,GERMAN TOOLS,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_20,26_20,,,,,SCIENTA OMICRON,confirmed,,,order_only,order_files=1
+26_21,26_21,,,,,BENTELER VIGO,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_22,26_22,73,73,26_22,EX 18,GESCHMIDT,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_22,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=25,invoice_files=1,invoice_status=accepted"
+26_23,26_23,103,103,,,VARAS HARD METAL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_23,client_exact,delivery_files=1,delivery_multi_refs=6"
+26_24,26_24,148,148,,,HIJOS DE JUAN GARAY,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_24,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_25,26_25,59,59,,,CIE NORMA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_25,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_26,26_26,,,,,GPI SYSTEMS AB,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_27,26_27,132,132,26_27,EX 17,PIGUET FRÈRES,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_27,client_exact,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_28,26_28,83,83,,,BENTELER VIGO,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_28,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_29,26_29,,,,,GESCHMDIT,confirmed,,,order_only,order_files=1
+26_3,26_3,114,114,,,CERN,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | ambiguous_invoice_candidates=4 | matched_ref=26_3,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_30,26_30,101,101,26_30,N 33,ONA ELECTROEROSIÓN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_30,client_exact,delivery_files=1,delivery_multi_refs=5 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_31,26_31,101,101,26_31,N 33,ONA ELECTROEROSIÓN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_31,client_exact,delivery_files=1,delivery_multi_refs=5 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_32,26_32,,,,,SCIENTA OMICRON,confirmed,,,order_only,order_files=1
+26_33,26_33,30,30,26_33,N 9,IBERLABO,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_33,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=1,invoice_files=1,invoice_status=accepted"
+26_34,26_34,,,,,HIPERBARIC,confirmed,,,order_only,order_files=1
+26_35,26_35,,,,,von KARMAN INST. FOR FLUID DYNAMICS,confirmed,,,order_only,order_files=1
+26_36,26_36,,,,,IDOM CONSULTING,confirmed,,,order_only,order_files=1
+26_37,26_37,90,90,,,BOSCO TECNOINDUSTRIA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | ambiguous_invoice_candidates=4 | matched_ref=26_37,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_38,26_38,,,,,T.M.NORMA,confirmed,,,order_only,order_files=1
+26_39,26_39,71,71,,,GESTAMP NAVARRA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_39,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_4,26_4,,,,,VARAS HARD METAL,confirmed,,,order_only,order_files=1
+26_40,26_40,,,,,CUSHWAY SCHMIDT Ltd,confirmed,,,order_only,order_files=1
+26_41,26_41,124,124,,,AUBERT & DUVAL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | ambiguous_invoice_candidates=3 | matched_ref=26_41,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_42,26_42,,,,,AQUAJET SYSTEMS,confirmed,,,order_only,order_files=1
+26_43,26_43,101,101,26_43,N 33,ONA ELECTROEROSIÓN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_43,client_exact,delivery_files=1,delivery_multi_refs=5 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_44,26_44,131,131,,,GPI SYSTEMS AB,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_44,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_45,26_45,36,36,26_45,IC 12,GESTAMP SOFEDIT SERMAISES,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_45,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_46,26_46,39,39,,,UNIV. DE AVEIRO,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_46,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_47,26_47,105,105,26_47,N 35,HIPERBARIC,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_47,client_exact,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=-1,invoice_files=1,invoice_status=accepted"
+26_48,26_48,40,40,,,MAGNA SEATING VIGO,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | ambiguous_invoice_candidates=2 | matched_ref=26_48,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_49,26_49,,,,,STA ISABEL,confirmed,,,order_only,order_files=1
+26_5,26_5,22,22,,,GESTAMP NAVARRA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_5,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_50,26_50,49,49,26_50,N 13,GALICIA AUTOESTAMPACIÓN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_50,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_51,26_51,141,141,26_51,EX 19,CERN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_51,client_exact,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_52,26_52,,,,,CHEVAL FRÈRES,confirmed,,,order_only,order_files=1
+26_53,26_53,,,,,LA FARGA YOURCOPPER SOLUTIONS,confirmed,,,order_only,order_files=1
+26_54,26_54,,,,,MAGNA SEATING VIGO,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_55,26_55,,,,,SCIENTA OMICRON AB,confirmed,,,order_only,order_files=1
+26_56,26_56,,,,,BENTELER VIGO,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_57,26_57,95,95,26_57,N 27,ONA ELECTROEROSIÓN,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_57,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=1,invoice_files=1,invoice_status=accepted"
+26_58,26_58,56,56,26_58,IC 19,TEN SA,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_58,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_59,26_59,91,91,,,BOSCO TECNOINDUSTRIA SL,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | ambiguous_invoice_candidates=4 | matched_ref=26_59,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_6,26_6,8,8,26_6,N 1,TECNALIA RESEARCH,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_partial_ref,"order_files=1 | matched_ref=26_6,client_exact,delivery_files=1,delivery_multi_refs=2 | client_normalized_subset,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_60,26_60,,,,,CSICpdf,confirmed,,,order_only,order_files=1
+26_61,26_61,119,119,,,S. OLOFSTRÖM,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_61,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_62,26_62,,,,,CONJET AB,confirmed,,,order_only,order_files=1
+26_63,26_63,,,,,VARAS HARD METAL,confirmed,,,order_only,order_files=1
+26_64,26_64,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_65,26_65,,,,,STETTLER SAPHIRE AG,confirmed,,,order_only,order_files=1 | ambiguous_delivery_candidates=2 | ambiguous_plan=delivery
+26_66,26_66,,,,,IONIX ADVANCED TECHNOLOGIES Ltd.,confirmed,,,order_only,order_files=1
+26_67,26_67,,,,,SHILOH FORSHEDA,confirmed,,,order_only,order_files=1
+26_68,26_68,137,137,26_68,EX 18,GESCHMIDT,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_68,client_exact,delivery_files=1,delivery_multi_refs=4 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_69,26_69,,,,,ANDERMAN CERAMIQUES,confirmed,,,order_only,order_files=1
+26_7,26_7,34,34,26_7,IC 21,HIGH TECH CERAM,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_7,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=15,invoice_files=1,invoice_status=accepted"
+26_70,26_70,,,,,APPLIED PHISICS TECHNOLOGIES,confirmed,,,order_only,order_files=1
+26_71,26_71,61,61,26_71,N 17,EQUILAB,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_71,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_72,26_72,62,62,26_72,N 18,EMPIRICAL ADVANCES,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_72,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_73,26_73,,,,,INSTITUTO DE CATÁLISIS Y PETROLEOQUÍMICA,confirmed,,,order_only,order_files=1
+26_74,26_74,,,,,FUNDACIÓ BOSCH I GIMPERA,confirmed,,,order_only,order_files=1
+26_75,26_75,,,,,BOSCO TECNOINDUSTRIApdf,confirmed,,,order_only,order_files=1
+26_76,26_76,135,135,,,GESTAMP NAVARRA,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_76,client_exact,delivery_files=1,delivery_multi_refs=3"
+26_77,26_77,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_78,26_78,98,98,26_78,IC 27,GESTAMP SOFEDIT SERMAISES,invoiced,accepted,high,order_ref_normalized+client_subset | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_78,client_normalized_subset,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=1,invoice_files=1,invoice_status=accepted"
+26_79,26_79,,,,,AQUAJET SYSTEMS AB,confirmed,,,order_only,order_files=1
+26_8,26_8,9,9,26_8,IC 14,FLUIDINOVA SA,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_8,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=1,invoice_files=1,invoice_status=accepted"
+26_80,26_80,,,,,UNIV. POL. DE MADRID,confirmed,,,order_only,order_files=1
+26_81,26_81,127,127,26_81,N 43,BOSCO TECNOINDUSTRIA,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_81,client_exact,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_82,26_82,137,137,26_82,EX 18,GESCHMIDT,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_82,client_exact,delivery_files=1,delivery_multi_refs=4 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_83,26_83,,,,,GESTAMP SOFEDIT SERMAISES,confirmed,,,order_only,order_files=1
+26_84,26_84,,,,,QUIMICA Y MEDIOAMBIENTE,confirmed,,,order_only,order_files=1
+26_85,26_85,,,,,ONA ELECTROEROSIÓN,confirmed,,,order_only,order_files=1
+26_86,26_86,,,,,GROUPE IMI,confirmed,,,order_only,order_files=1
+26_87,26_87,120,120,26_87,N 38,EGAÑA 2,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_87,client_exact,delivery_files=1,delivery_multi_refs=3 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_88,26_88,,,,,ADIENT CALATORAO,confirmed,,,order_only,order_files=1
+26_89,26_89,,,,,VKI,confirmed,,,order_only,order_files=1
+26_9,26_9,25,25,26_9,N 5,EGAÑA 2,invoiced,accepted,high,order_ref_normalized+client_exact | delivery_client_date_window_exact,"order_files=1 | matched_ref=26_9,client_exact,delivery_files=1,delivery_multi_refs=2 | client_exact,invoice_gap_days=0,invoice_files=1,invoice_status=accepted"
+26_90,26_90,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_91,26_91,,,,,AQUAJET SYSTEMS,confirmed,,,order_only,order_files=1
+26_92,26_92,94,94,,,PROCON,delivered,,high,order_ref_normalized+client_exact,"order_files=1 | matched_ref=26_92,client_exact,delivery_files=1,delivery_multi_refs=2"
+26_93,26_93,,,,,UTE LAS LOMAS,confirmed,,,order_only,order_files=1
+26_94,26_94,,,,,HORN GLASS INDUSTRIES,confirmed,,,order_only,order_files=1
+26_95,26_95,,,,,HIJOS DE JUAN GARAY,confirmed,,,order_only,order_files=1
+26_96,26_96,,,,,FRAUENTHAL GNOTEC SWEDEN,confirmed,,,order_only,order_files=1
+26_97,26_97,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_98,26_98,,,,,CSIC,confirmed,,,order_only,order_files=1
+26_99,26_99,,,,,ADIENT POLAND,confirmed,,,order_only,order_files=1

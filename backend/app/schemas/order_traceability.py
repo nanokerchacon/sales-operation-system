@@ -7,15 +7,21 @@ class OrderTraceabilityHeader(BaseModel):
     client_name: str
     order_date: str | None
     status: str
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class OrderTraceabilitySummary(BaseModel):
     total_ordered_quantity: float
     total_delivered_quantity: float
     total_invoiced_quantity: float
+    total_issued_quantity: float
+    total_pending_acceptance_quantity: float
     pending_delivery_quantity: float
     pending_invoice_quantity: float
     status: str
+    invoice_document_status: str
+    invoice_document_status_es: str
 
 
 class OrderTraceabilityItem(BaseModel):
@@ -41,6 +47,9 @@ class OrderTraceabilityInvoice(BaseModel):
     invoice_number: str
     invoice_date: str | None
     total_amount: float
+    invoice_type: str
+    invoice_status: str
+    source_folder: str | None
 
 
 class OrderTraceabilityResponse(BaseModel):

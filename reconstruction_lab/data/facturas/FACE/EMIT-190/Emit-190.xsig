@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fe:Facturae xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:fe="http://www.facturae.es/Facturae/2014/v3.2.1/Facturae"><FileHeader><SchemaVersion>3.2.1</SchemaVersion><Modality>I</Modality><InvoiceIssuerType>EM</InvoiceIssuerType><Batch><BatchIdentifier>Q2818002D190Emit-</BatchIdentifier><InvoicesCount>1</InvoicesCount><TotalInvoicesAmount><TotalAmount>1114.8</TotalAmount></TotalInvoicesAmount><TotalOutstandingAmount><TotalAmount>1114.8</TotalAmount></TotalOutstandingAmount><TotalExecutableAmount><TotalAmount>1114.8</TotalAmount></TotalExecutableAmount><InvoiceCurrencyCode>EUR</InvoiceCurrencyCode></Batch></FileHeader><Parties><SellerParty><TaxIdentification><PersonTypeCode>J</PersonTypeCode><ResidenceTypeCode>R</ResidenceTypeCode><TaxIdentificationNumber>B74255902</TaxIdentificationNumber></TaxIdentification><LegalEntity><CorporateName>NANOKER RESEARCH SL</CorporateName><TradeName>NANOKER</TradeName><AddressInSpain><Address>Polígono Industrial Olloniego, parcela 22A, nave 5</Address><PostCode>33660</PostCode><Town>Oviedo</Town><Province>Asturias</Province><CountryCode>ESP</CountryCode></AddressInSpain><ContactDetails><Telephone>985207613</Telephone><TeleFax>985205685</TeleFax><WebAddress>www.nanoker.com</WebAddress><ElectronicMail>v.torrecillas@nanoker.com</ElectronicMail><ContactPersons>Violeta Torrecillas - Customer Service</ContactPersons></ContactDetails></LegalEntity></SellerParty><BuyerParty><TaxIdentification><PersonTypeCode>J</PersonTypeCode><ResidenceTypeCode>R</ResidenceTypeCode><TaxIdentificationNumber>Q2818002D</TaxIdentificationNumber></TaxIdentification><AdministrativeCentres><AdministrativeCentre><CentreCode>EA0041290</CentreCode><RoleTypeCode>02</RoleTypeCode><Name>EA0041290</Name><AddressInSpain><Address>CALLESERRANO,117</Address><PostCode>28006</PostCode><Town>MADRID</Town><Province>MADRID</Province><CountryCode>ESP</CountryCode></AddressInSpain><CentreDescription>CENTRO DE QUÍMICA Y MATERIALES DE ARAGÓN</CentreDescription></AdministrativeCentre><AdministrativeCentre><CentreCode>EA0041290</CentreCode><RoleTypeCode>03</RoleTypeCode><Name>EA0041290</Name><AddressInSpain><Address>CALLESERRANO,117</Address><PostCode>28006</PostCode><Town>MADRID</Town><Province>MADRID</Province><CountryCode>ESP</CountryCode></AddressInSpain><CentreDescription>CENTRO DE QUÍMICA Y MATERIALES DE ARAGÓN</CentreDescription></AdministrativeCentre><AdministrativeCentre><CentreCode>EA0041401</CentreCode><RoleTypeCode>01</RoleTypeCode><Name>EA0041401</Name><AddressInSpain><Address>CALLESERRANO,117</Address><PostCode>28006</PostCode><Town>MADRID</Town><Province>MADRID</Province><CountryCode>ESP</CountryCode></AddressInSpain><CentreDescription>SECRETARÍA GENERAL ADJUNTA DE ACTUACIÓN ECONÓMICA</CentreDescription></AdministrativeCentre></AdministrativeCentres><LegalEntity><CorporateName>CSIC-AGENCIAESTATALCONSEJOSUP.DEINVES</CorporateName><TradeName>CSIC</TradeName><AddressInSpain><Address> CALLESERRANO,117</Address><PostCode>28006</PostCode><Town>MADRID</Town><Province>MADRID</Province><CountryCode>ESP</CountryCode></AddressInSpain></LegalEntity></BuyerParty></Parties><Invoices><Invoice><InvoiceHeader><InvoiceNumber>190</InvoiceNumber><InvoiceSeriesCode>Emit-</InvoiceSeriesCode><InvoiceDocumentType>FC</InvoiceDocumentType><InvoiceClass>OO</InvoiceClass></InvoiceHeader><InvoiceIssueData><IssueDate>2026-02-27</IssueDate><InvoiceCurrencyCode>EUR</InvoiceCurrencyCode><TaxCurrencyCode>EUR</TaxCurrencyCode><LanguageName>es</LanguageName></InvoiceIssueData><TaxesOutputs><Tax><TaxTypeCode>01</TaxTypeCode><TaxRate>21.0</TaxRate><TaxableBase><TotalAmount>921.32</TotalAmount></TaxableBase><TaxAmount><TotalAmount>193.48</TotalAmount></TaxAmount></Tax></TaxesOutputs><InvoiceTotals><TotalGrossAmount>921.32</TotalGrossAmount><TotalGeneralDiscounts>0.0</TotalGeneralDiscounts><TotalGeneralSurcharges>0.0</TotalGeneralSurcharges><TotalGrossAmountBeforeTaxes>921.32</TotalGrossAmountBeforeTaxes><TotalTaxOutputs>193.48</TotalTaxOutputs><TotalTaxesWithheld>0.0</TotalTaxesWithheld><InvoiceTotal>1114.8</InvoiceTotal><TotalOutstandingAmount>1114.8</TotalOutstandingAmount><TotalExecutableAmount>1114.8</TotalExecutableAmount></InvoiceTotals><Items><InvoiceLine><ReceiverTransactionReference>RM18351</ReceiverTransactionReference><ItemDescription>Crisol cilíndrico KA997 ML000002 KAC‑1208</ItemDescription><Quantity>8</Quantity><UnitOfMeasure>01</UnitOfMeasure><UnitPriceWithoutTax>10.45</UnitPriceWithoutTax><TotalCost>83.6</TotalCost><GrossAmount>83.6</GrossAmount><TaxesOutputs><Tax><TaxTypeCode>01</TaxTypeCode><TaxRate>21</TaxRate><TaxableBase><TotalAmount>83.6</TotalAmount></TaxableBase><TaxAmount><TotalAmount>17.56</TotalAmount></TaxAmount></Tax></TaxesOutputs><AdditionalLineItemInformation>Solicitante: Rosa I. Merino
+Contacto: 876 553 447
+CIF cliente: Q2818002D
+Datos del pedido:
+Nº Pedido Cliente: RM18351
+Fecha del pedido: 25/02/2026
+Referencia: 26/000097
+Oferta: 26076
+
+Dirección de entrega:
+Instituto de Nanociencia y Materiales de Aragón (INMA – CSIC/Universidad de Zaragoza)
+C/ Pedro Cerbuna, 12
+50009 Zaragoza
+Dirección de facturación:
+CSIC – Agencia Estatal Consejo Superior de Investigaciones Científicas
+C/ Serrano, 117
+28006 Madrid
+</AdditionalLineItemInformation></InvoiceLine><InvoiceLine><ReceiverTransactionReference>RM18351</ReceiverTransactionReference><ItemDescription>Bandeja rectangular KA997 ML000034 KAT‑15065</ItemDescription><Quantity>4</Quantity><UnitOfMeasure>01</UnitOfMeasure><UnitPriceWithoutTax>148.2</UnitPriceWithoutTax><TotalCost>592.8</TotalCost><GrossAmount>592.8</GrossAmount><TaxesOutputs><Tax><TaxTypeCode>01</TaxTypeCode><TaxRate>21</TaxRate><TaxableBase><TotalAmount>592.8</TotalAmount></TaxableBase><TaxAmount><TotalAmount>124.49</TotalAmount></TaxAmount></Tax></TaxesOutputs><AdditionalLineItemInformation>Solicitante: Rosa I. Merino
+Contacto: 876 553 447
+CIF cliente: Q2818002D
+Datos del pedido:
+Nº Pedido Cliente: RM18351
+Fecha del pedido: 25/02/2026
+Referencia: 26/000097
+Oferta: 26076
+
+Dirección de entrega:
+Instituto de Nanociencia y Materiales de Aragón (INMA – CSIC/Universidad de Zaragoza)
+C/ Pedro Cerbuna, 12
+50009 Zaragoza
+Dirección de facturación:
+CSIC – Agencia Estatal Consejo Superior de Investigaciones Científicas
+C/ Serrano, 117
+28006 Madrid
+________________________________________
+Datos DIR3 para facturación electrónica (INMA – CSIC):
+Titular: CSIC / INMA
+CIF: Q2818002D
+Teléfono: 976 76 24 51
+Correo electrónico: gerencia.ceqma@csic.es
+Oficina contable:
+Código: EA0041401
+Descripción: Secretaría General Adjunta de Actuación Económica
+Órgano gestor:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+Unidad tramitadora:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+</AdditionalLineItemInformation></InvoiceLine><InvoiceLine><ReceiverTransactionReference>RM18351</ReceiverTransactionReference><ItemDescription>Tapa KA997 ML000091 KAPT‑150</ItemDescription><Quantity>4</Quantity><UnitOfMeasure>01</UnitOfMeasure><UnitPriceWithoutTax>58.23</UnitPriceWithoutTax><TotalCost>232.92</TotalCost><GrossAmount>232.92</GrossAmount><TaxesOutputs><Tax><TaxTypeCode>01</TaxTypeCode><TaxRate>21</TaxRate><TaxableBase><TotalAmount>232.92</TotalAmount></TaxableBase><TaxAmount><TotalAmount>48.91</TotalAmount></TaxAmount></Tax></TaxesOutputs><AdditionalLineItemInformation>Solicitante: Rosa I. Merino
+Contacto: 876 553 447
+CIF cliente: Q2818002D
+Datos del pedido:
+Nº Pedido Cliente: RM18351
+Fecha del pedido: 25/02/2026
+Referencia: 26/000097
+Oferta: 26076
+
+Dirección de entrega:
+Instituto de Nanociencia y Materiales de Aragón (INMA – CSIC/Universidad de Zaragoza)
+C/ Pedro Cerbuna, 12
+50009 Zaragoza
+Dirección de facturación:
+CSIC – Agencia Estatal Consejo Superior de Investigaciones Científicas
+C/ Serrano, 117
+28006 Madrid
+________________________________________
+Datos DIR3 para facturación electrónica (INMA – CSIC):
+Titular: CSIC / INMA
+CIF: Q2818002D
+Teléfono: 976 76 24 51
+Correo electrónico: gerencia.ceqma@csic.es
+Oficina contable:
+Código: EA0041401
+Descripción: Secretaría General Adjunta de Actuación Económica
+Órgano gestor:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+Unidad tramitadora:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+</AdditionalLineItemInformation></InvoiceLine><InvoiceLine><ReceiverTransactionReference>RM18351</ReceiverTransactionReference><ItemDescription>PORTES</ItemDescription><Quantity>12</Quantity><UnitOfMeasure>01</UnitOfMeasure><UnitPriceWithoutTax>1</UnitPriceWithoutTax><TotalCost>12</TotalCost><GrossAmount>12</GrossAmount><TaxesOutputs><Tax><TaxTypeCode>01</TaxTypeCode><TaxRate>21</TaxRate><TaxableBase><TotalAmount>12</TotalAmount></TaxableBase><TaxAmount><TotalAmount>2.52</TotalAmount></TaxAmount></Tax></TaxesOutputs><AdditionalLineItemInformation>PeSolicitante: Rosa I. Merino
+Contacto: 876 553 447
+CIF cliente: Q2818002D
+Datos del pedido:
+Nº Pedido Cliente: RM18351
+Fecha del pedido: 25/02/2026
+Referencia: 26/000097
+Oferta: 26076
+
+Dirección de entrega:
+Instituto de Nanociencia y Materiales de Aragón (INMA – CSIC/Universidad de Zaragoza)
+C/ Pedro Cerbuna, 12
+50009 Zaragoza
+Dirección de facturación:
+CSIC – Agencia Estatal Consejo Superior de Investigaciones Científicas
+C/ Serrano, 117
+28006 Madrid
+________________________________________
+Datos DIR3 para facturación electrónica (INMA – CSIC):
+Titular: CSIC / INMA
+CIF: Q2818002D
+Teléfono: 976 76 24 51
+Correo electrónico: gerencia.ceqma@csic.es
+Oficina contable:
+Código: EA0041401
+Descripción: Secretaría General Adjunta de Actuación Económica
+Órgano gestor:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+Unidad tramitadora:
+Código: EA0041290
+Descripción: Centro de Química y Materiales de Aragón
+
+</AdditionalLineItemInformation></InvoiceLine></Items><PaymentDetails><Installment><InstallmentDueDate>2026-02-27</InstallmentDueDate><InstallmentAmount>1114.80</InstallmentAmount><PaymentMeans>04</PaymentMeans><AccountToBeCredited><IBAN>ES0921002165170200274029</IBAN><BankCode>2100</BankCode><BranchCode>2165</BranchCode><BranchInSpainAddress><Address>CABO NOVAL 7</Address><PostCode>33007</PostCode><Town>OVIEDO</Town><Province>ASTURIAS</Province><CountryCode>ESP</CountryCode></BranchInSpainAddress></AccountToBeCredited><AccountToBeDebited><IBAN>ES0921002165170200274029</IBAN><BankCode>2100</BankCode><BranchCode>2165</BranchCode><BranchInSpainAddress><Address>CABO NOVAL 7</Address><PostCode>33007</PostCode><Town>OVIEDO</Town><Province>ASTURIAS</Province><CountryCode>ESP</CountryCode></BranchInSpainAddress></AccountToBeDebited></Installment></PaymentDetails></Invoice></Invoices><ds:Signature xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#" Id="Signature1024627">
+<ds:SignedInfo Id="Signature-SignedInfo724201">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></ds:CanonicalizationMethod>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></ds:SignatureMethod>
+<ds:Reference Id="SignedPropertiesID249843" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature1024627-SignedProperties171941">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+<ds:DigestValue>E+Xp3WfhTDUCGU5IVnsxG6d9bIQ=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#Certificate11040439">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+<ds:DigestValue>CsXrxrDC9Lb54gFM11XSvTEUW/c=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="Reference-ID-421606" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></ds:Transform>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod>
+<ds:DigestValue>oVGQZvuJ+yzyPXLah4Pas9+MM98=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="SignatureValue357602">
+eozfzLeGZi7Y2csufcNOeMpwrrFIxQTchjPe941H6BfgOFR9qzEjhHwzn0x8ijHeMMR32uf02VKm
+6Adgdk6PQ9m8U+BJSlIJuVfKObtq94xHr0XuBnYSyk+aSfRNYPA3nYLCwsxeekcBmgQ/3tFzA0HL
+Oj305sXV5CBLx6oJug4N6RGwR7VOfEKGAwSo8QYf9/jx9e+NbrOcNrAVDAV2Y3GYWrPSSrYsOU3l
+j2HHDC2p9K3Lx2FUdS+2Tao61sOavGUH3LGd/VYMvFKfmTUPwdmuwSck2EeGof0HZQ2YSh+MyQm/
+7XzMBF3+JrecHxvWk9wSMpX+4TUCTnniKxlWJQ==
+</ds:SignatureValue>
+<ds:KeyInfo Id="Certificate11040439">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIIhTCCB22gAwIBAgIQYaZYMyb3KHVpbg4zqCbK3DANBgkqhkiG9w0BAQsFADBNMQswCQYDVQQG
+EwJFUzERMA8GA1UECgwIRk5NVC1SQ00xDjAMBgNVBAsMBUNFUkVTMRswGQYDVQQDDBJBQyBSZXBy
+ZXNlbnRhY2nDs24wHhcNMjYwMTE5MTA1NzU1WhcNMjgwMTE5MTA1NzU1WjCB9zE4MDYGA1UEDQwv
+UmVmOkFFQVQvQUVBVDAzODcvUFVFU1RPIDEvMzUwMjIvMTkwMTIwMjYxMTU2NTQxGDAWBgNVBAUT
+D0lEQ0VTLTA5MzY0MzYxQTEPMA0GA1UEKgwGU0FNVUVMMRgwFgYDVQQEDA9NRU5FTkRFWiBHQVJD
+SUExMTAvBgNVBAMMKDA5MzY0MzYxQSBTQU1VRUwgTUVORU5ERVogKFI6IEI3NDI1NTkwMikxGDAW
+BgNVBGEMD1ZBVEVTLUI3NDI1NTkwMjEcMBoGA1UECgwTTkFOT0tFUiBSRVNFQVJDSCBTTDELMAkG
+A1UEBhMCRVMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDZnUQPGcb61l6zmzlUPV8s
+aKmQ7cWznGb9YjgCsgeZWkba6bP4QaeuCqU+43OnyeAIq1z5D8HGDl/MQVehBWlyCUWwvSRQsqQD
+eSo9EeYEUULlGdw0pXZ0/uWDqR5KRxekd79tf1bXlSgTpLMvtOeAyn7GCp4XbSE6xL0Wic8jQbc4
+UTJ54GEOKiJYPI4fABZUMk+ndHWPoDiwho/W3UlSJDQrbjXlWpX+quJ+7tTcze+E/oXNTqjdzmJd
+3Q8ncsRwSbRrVof7lGQJh+o2ml52R8D6lkO7p3oVombK3hP3edhZFwxpf1DnI4nq/IRD12j7sTVc
+D1MhNsTu4grlzYXxAgMBAAGjggS0MIIEsDCB0QYDVR0RBIHJMIHGgRNwLmN1ZXRvQG5hbm9rZXIu
+Y29tpIGuMIGrMR4wHAYJKwYBBAGsZgEHDA9WQVRFUy1CNzQyNTU5MDIxIjAgBgkrBgEEAaxmAQYM
+E05BTk9LRVIgUkVTRUFSQ0ggU0wxHjAcBgkrBgEEAaxmAQQMD0lEQ0VTLTA5MzY0MzYxQTEVMBMG
+CSsGAQQBrGYBAwwGR0FSQ0lBMRcwFQYJKwYBBAGsZgECDAhNRU5FTkRFWjEVMBMGCSsGAQQBrGYB
+AQwGU0FNVUVMMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgXgMCoGA1UdJQQjMCEGCCsGAQUF
+BwMCBgorBgEEAYI3CgMMBgkqhkiG9y8BAQUwgYIGCCsGAQUFBwEBBHYwdDA9BggrBgEFBQcwAYYx
+aHR0cDovL29jc3ByZXAuY2VydC5mbm10LmVzL29jc3ByZXAvT2NzcFJlc3BvbmRlcjAzBggrBgEF
+BQcwAoYnaHR0cDovL3d3dy5jZXJ0LmZubXQuZXMvY2VydHMvQUNSRVAuY3J0MB0GA1UdDgQWBBQM
+XUJZAQ87dN8QjLj05td614wHLTCCATwGA1UdIASCATMwggEvMIIBFQYKKwYBBAGsZgMLAjCCAQUw
+KQYIKwYBBQUHAgEWHWh0dHA6Ly93d3cuY2VydC5mbm10LmVzL2RwY3MvMIHXBggrBgEFBQcCAjCB
+ygyBx0NlcnRpZmljYWRvIGN1YWxpZmljYWRvIGRlIHJlcHJlc2VudGFudGUgZGUgcC4ganVyw61k
+aWNhIGVuIHN1cyByZWxhY2lvbmVzIGNvbiBsYXMgQUFQUC4gU3VqZXRvIGEgY29uZGljaW9uZXMg
+ZGUgdXNvIHNlZ8O6biBsYSBEUEMgZGUgRk5NVC1SQ00sIE5JRjogUTI4MjYwMDQtSiAoQy9Kb3Jn
+ZSBKdWFuIDEwNi0yODAwOS1NYWRyaWQtRXNwYcOxYSkwCQYHBACL7EABADAJBgdghVQBAwUIMIGm
+BggrBgEFBQcBAwSBmTCBljAIBgYEAI5GAQEwEwYGBACORgEGMAkGBwQAjkYBBgEwaAYGBACORgEF
+MF4wLRYnaHR0cHM6Ly93d3cuY2VydC5mbm10LmVzL3Bkcy9QRFNfZXMucGRmEwJlczAtFidodHRw
+czovL3d3dy5jZXJ0LmZubXQuZXMvcGRzL1BEU19lbi5wZGYTAmVuMAsGBgQAjkYBAwIBDzAfBgNV
+HSMEGDAWgBTcUJaf1zGJyRHk75Zf9l+CUkZiUzCB4QYDVR0fBIHZMIHWMIHToIHQoIHNhoGdbGRh
+cDovL2xkYXByZXAuY2VydC5mbm10LmVzL0NOPUNSTDI5NTIsT1U9QUMlMjBSZXByZXNlbnRhY2lv
+bixPVT1DRVJFUyxPPUZOTVQtUkNNLEM9RVM/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdDtiaW5h
+cnk/YmFzZT9vYmplY3RjbGFzcz1jUkxEaXN0cmlidXRpb25Qb2ludIYraHR0cDovL3d3dy5jZXJ0
+LmZubXQuZXMvY3Jsc3JlcC9DUkwyOTUyLmNybDANBgkqhkiG9w0BAQsFAAOCAQEAAvwzPkpOBAhA
+88O5UAivpgrfzvUZrf60SLuedk78p8VKUNlmiruAcbYEQb7R9WcL1gm/4F2RvLg9UCgUqLFy1dRD
+qutKg/o63cY4iGmqXxEbVn9PA8Slc3ibrs467tGZN+3SriW1s1Ld3MCeGX8znbdYTGVG/fTQCU6G
+TKHlmwp9GviIuEC5UhRbSKaLXlQCyx/faoVN35DL7Z8VgwPLyf1CETB2HsI+w6wMXu8dJ8AisGT9
+flJRmZaUBAI0HTWzpwaiNUTQ3LD0Z4ZMc/1ytHykI9wbf3vp36I1HqcKG1YM6SQwQDiZSpcO6X+q
+lXOpCcqJBeTuidlqYw8CgW89FA==
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+2Z1EDxnG+tZes5s5VD1fLGipkO3Fs5xm/WI4ArIHmVpG2umz+EGnrgqlPuNzp8ngCKtc+Q/Bxg5f
+zEFXoQVpcglFsL0kULKkA3kqPRHmBFFC5RncNKV2dP7lg6keSkcXpHe/bX9W15UoE6SzL7TngMp+
+xgqeF20hOsS9FonPI0G3OFEyeeBhDioiWDyOHwAWVDJPp3R1j6A4sIaP1t1JUiQ0K2415VqV/qri
+fu7U3M3vhP6FzU6o3c5iXd0PJ3LEcEm0a1aH+5RkCYfqNppedkfA+pZDu6d6FaJmyt4T93nYWRcM
+aX9Q5yOJ6vyEQ9do+7E1XA9TITbE7uIK5c2F8Q==
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object Id="Signature1024627-Object73035"><etsi:QualifyingProperties Target="#Signature1024627"><etsi:SignedProperties Id="Signature1024627-SignedProperties171941"><etsi:SignedSignatureProperties><etsi:SigningTime>2026-02-27T15:50:49+01:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod><ds:DigestValue>Ln0QsK6Ae9PgMRNWpYC5n6375W8=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AC Representación,OU=CERES,O=FNMT-RCM,C=ES</ds:X509IssuerName><ds:X509SerialNumber>129798825774394256743665194530666629852</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate><etsi:SignaturePolicyIdentifier><etsi:SignaturePolicyId><etsi:SigPolicyId><etsi:Identifier>http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf</etsi:Identifier><etsi:Description>Política de Firma FacturaE v3.1</etsi:Description></etsi:SigPolicyId><etsi:SigPolicyHash><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></ds:DigestMethod><ds:DigestValue>Ohixl6upD6av8N7pEvDABhEL6hM=</ds:DigestValue></etsi:SigPolicyHash></etsi:SignaturePolicyId></etsi:SignaturePolicyIdentifier><etsi:SignerRole><etsi:ClaimedRoles><etsi:ClaimedRole>emisor</etsi:ClaimedRole></etsi:ClaimedRoles></etsi:SignerRole></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-421606"><etsi:Description>Factura electrónica</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></fe:Facturae>

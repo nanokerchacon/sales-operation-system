@@ -27,9 +27,19 @@ function buildSummaryCards(summary) {
       detail: "Cantidad total entregada.",
     },
     {
-      title: "Facturado",
+      title: "Facturado aceptado",
       value: formatNumber(summary.total_invoiced_quantity),
-      detail: "Cantidad total facturada.",
+      detail: "Cantidad documentalmente aceptada.",
+    },
+    {
+      title: "Emitido",
+      value: formatNumber(summary.total_issued_quantity),
+      detail: "Cantidad con factura emitida.",
+    },
+    {
+      title: "Pendiente aceptación",
+      value: formatNumber(summary.total_pending_acceptance_quantity),
+      detail: "Cantidad emitida aún pendiente de aceptación.",
     },
     {
       title: "Pendiente entrega",
@@ -37,9 +47,9 @@ function buildSummaryCards(summary) {
       detail: "Cantidad aun pendiente de servir.",
     },
     {
-      title: "Pendiente facturar",
+      title: "Pendiente cierre",
       value: formatNumber(summary.pending_invoice_quantity),
-      detail: "Cantidad entregada pendiente de factura.",
+      detail: "Cantidad entregada aún no aceptada documentalmente.",
     },
   ];
 }
@@ -107,7 +117,7 @@ export default function OrderTraceabilityPage({ orderId }) {
     },
     {
       key: "invoiced_quantity",
-      header: "Facturado",
+      header: "Aceptado",
       render: (row) => formatNumber(row.invoiced_quantity),
     },
     {
@@ -117,7 +127,7 @@ export default function OrderTraceabilityPage({ orderId }) {
     },
     {
       key: "pending_invoice_quantity",
-      header: "Pend. factura",
+      header: "Pend. cierre",
       render: (row) => formatNumber(row.pending_invoice_quantity),
     },
     {
@@ -150,6 +160,21 @@ export default function OrderTraceabilityPage({ orderId }) {
       render: (row) => formatDate(row.invoice_date),
     },
     {
+      key: "invoice_type",
+      header: "Tipo",
+      render: (row) => <OperationalStatusBadge value={row.invoice_type} />,
+    },
+    {
+      key: "invoice_status",
+      header: "Estado doc.",
+      render: (row) => <OperationalStatusBadge value={row.invoice_status} />,
+    },
+    {
+      key: "source_folder",
+      header: "Carpeta",
+      render: (row) => row.source_folder || "-",
+    },
+    {
       key: "total_amount",
       header: "Importe",
       render: (row) => formatCurrency(row.total_amount),
@@ -173,7 +198,7 @@ export default function OrderTraceabilityPage({ orderId }) {
           {loading ? (
             <LoadingState lines={4} />
           ) : data ? (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Pedido</p>
                 <p className="mt-2 text-lg font-semibold text-slate-900">{data.order.order_number}</p>
@@ -192,13 +217,19 @@ export default function OrderTraceabilityPage({ orderId }) {
                   <OperationalStatusBadge value={data.order.status} />
                 </div>
               </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Estado documental</p>
+                <div className="mt-2">
+                  <OperationalStatusBadge value={data.order.invoice_document_status} />
+                </div>
+              </div>
             </div>
           ) : null}
         </SectionCard>
 
-        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+        <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
           {loading
-            ? Array.from({ length: 5 }).map((_, index) => (
+            ? Array.from({ length: 7 }).map((_, index) => (
                 <div key={index} className="h-[144px] animate-pulse rounded-md border border-slate-200 bg-white shadow-panel" />
               ))
             : buildSummaryCards(data?.summary).map((card) => <SummaryCard key={card.title} {...card} />)}
@@ -243,7 +274,7 @@ export default function OrderTraceabilityPage({ orderId }) {
 
             <SectionCard
               title="Invoices relacionadas"
-              subtitle="Facturas emitidas a partir del pedido."
+              subtitle="Facturas emitidas a partir del pedido, con su estado documental."
             >
               {loading ? (
                 <LoadingState lines={4} />

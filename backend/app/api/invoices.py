@@ -7,6 +7,7 @@ from app.models.delivery import DeliveryItem
 from app.models.invoice import Invoice, InvoiceItem
 from app.models.order import OrderItem
 from app.schemas.invoice import InvoiceCreate, InvoiceRead
+from app.services.invoice_documents import resolve_invoice_document_metadata
 
 
 router = APIRouter()
@@ -16,7 +17,12 @@ router = APIRouter()
 def create_invoice(invoice: InvoiceCreate) -> Invoice:
     db = SessionLocal()
     try:
-        db_invoice = Invoice(order_id=invoice.order_id)
+        document_metadata = resolve_invoice_document_metadata(
+            source_folder=invoice.source_folder,
+            invoice_type=invoice.invoice_type,
+            invoice_status=invoice.invoice_status,
+        )
+        db_invoice = Invoice(order_id=invoice.order_id, **document_metadata)
         db.add(db_invoice)
         db.flush()
 
