@@ -5,8 +5,9 @@ from sqlalchemy.orm import Session, selectinload
 from app.database.session import get_db
 from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.order import Order, OrderItem
-from app.schemas.delivery import DeliveryNoteCreate, DeliveryNoteRead
-from app.services.access_control import CurrentUser, apply_delivery_scope, require_order_access, require_permission
+from app.schemas.delivery import DeliveryDetailResponse, DeliveryListItem, DeliveryNoteCreate, DeliveryNoteRead
+from app.services.access_control import CurrentUser, require_order_access, require_permission
+from app.services.deliveries import get_delivery_detail, list_deliveries_overview
 
 
 router = APIRouter()
@@ -91,11 +92,18 @@ def create_delivery(
     )
 
 
-@router.get("", response_model=list[DeliveryNoteRead])
+@router.get("", response_model=list[DeliveryListItem])
 def list_deliveries(
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(require_permission("deliveries.view")),
-) -> list[DeliveryNote]:
-    query = db.query(DeliveryNote).options(selectinload(DeliveryNote.items))
-    query = apply_delivery_scope(query, current_user.access_context)
-    return query.all()
+) -> list[dict[str, object]]:
+    return list_deliveries_overview(db, current_user.access_context)
+
+
+@router.get("/{delivery_id}", response_model=DeliveryDetailResponse)
+def delivery_detail(
+    delivery_id: int,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("deliveries.view")),
+) -> dict[str, object]:
+    return get_delivery_detail(db, delivery_id, current_user.access_context)

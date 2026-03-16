@@ -28,14 +28,14 @@ const navigationItems = [
     label: "Albaranes",
     to: "/deliveries",
     permission: "deliveries.view",
-    roles: ["direccion_general", "finanzas", "admin"],
+    roles: ["direccion_general", "comercial", "finanzas", "admin"],
   },
   {
     key: "invoices",
     label: "Facturas",
     to: "/invoices",
     permission: "invoices.view",
-    roles: ["direccion_general", "finanzas", "admin"],
+    roles: ["direccion_general", "comercial", "finanzas", "admin"],
   },
   {
     key: "incidents",

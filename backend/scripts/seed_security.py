@@ -32,6 +32,8 @@ PERMISSIONS = {
     "products.view": ("products", "view", "View products", False),
     "products.create": ("products", "create", "Create products", False),
     "incidents.view": ("incidents", "view", "View incidents", False),
+    "incidents.create": ("incidents", "create", "Create incidents", False),
+    "incidents.update": ("incidents", "update", "Update incidents", False),
     "admin.view": ("admin", "view", "View administration", False),
     "admin.manage_users": ("admin", "manage_users", "Manage users", True),
     "admin.manage_roles": ("admin", "manage_roles", "Manage roles", True),
@@ -51,6 +53,8 @@ ROLE_PERMISSIONS = {
         "invoices.view",
         "products.view",
         "incidents.view",
+        "incidents.create",
+        "incidents.update",
     },
     "finanzas": {
         "dashboard.view",
@@ -62,6 +66,8 @@ ROLE_PERMISSIONS = {
         "invoices.create",
         "products.view",
         "incidents.view",
+        "incidents.create",
+        "incidents.update",
     },
 }
 

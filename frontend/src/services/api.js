@@ -68,6 +68,11 @@ export const apiClient = {
       method: "PUT",
       body: JSON.stringify(body),
     }),
+  patch: (path, body) =>
+    request(path, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
   delete: (path) =>
     request(path, {
       method: "DELETE",

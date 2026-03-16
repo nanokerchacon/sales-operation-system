@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import DataTable from "../components/DataTable";
 import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
@@ -143,6 +143,11 @@ export default function OrderTraceabilityPage() {
     {
       key: "delivery_number",
       header: "Albaran",
+      render: (row) => (
+        <Link to={`/deliveries/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+          {row.delivery_number}
+        </Link>
+      ),
     },
     {
       key: "delivery_date",
@@ -155,6 +160,11 @@ export default function OrderTraceabilityPage() {
     {
       key: "invoice_number",
       header: "Factura",
+      render: (row) => (
+        <Link to={`/invoices/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+          {row.invoice_number}
+        </Link>
+      ),
     },
     {
       key: "invoice_date",

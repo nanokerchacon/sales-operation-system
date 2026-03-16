@@ -12,6 +12,7 @@ from app.database.session import get_db
 from app.models.auth import AuthSession, ClientAssignment, Permission, Role, RolePermission, User, UserRole
 from app.models.client import Client
 from app.models.delivery import DeliveryNote
+from app.models.incident import Incident
 from app.models.invoice import Invoice
 from app.models.order import Order
 
@@ -182,6 +183,16 @@ def apply_client_scope(query: Query, access_context: AccessContext) -> Query:
 
 
 
+def require_client_access(access_context: AccessContext, client: Client | None) -> None:
+    if client is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
+    if access_context.has_global_scope:
+        return
+    if client.id not in (access_context.client_ids or set()):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied for this client")
+
+
+
 def apply_order_scope(query: Query, access_context: AccessContext) -> Query:
     if access_context.has_global_scope:
         return query
@@ -206,6 +217,15 @@ def apply_invoice_scope(query: Query, access_context: AccessContext) -> Query:
     if not access_context.client_ids:
         return query.filter(Invoice.id == -1)
     return query.join(Order, Order.id == Invoice.order_id).filter(Order.client_id.in_(access_context.client_ids))
+
+
+
+def apply_incident_scope(query: Query, access_context: AccessContext) -> Query:
+    if access_context.has_global_scope:
+        return query
+    if not access_context.client_ids:
+        return query.filter(Incident.id == -1)
+    return query.filter(Incident.client_id.in_(access_context.client_ids))
 
 
 

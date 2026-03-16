@@ -116,16 +116,10 @@ export default function ClientDetailPage() {
       header: "Acción",
       render: (row) => (
         <div className="flex flex-col gap-1">
-          <Link
-            to={`/orders/${row.id}`}
-            className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
-          >
+          <Link to={`/orders/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
             Abrir pedido
           </Link>
-          <Link
-            to={`/orders/${row.id}/traceability`}
-            className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
-          >
+          <Link to={`/orders/${row.id}/traceability`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
             Ver trazabilidad
           </Link>
         </div>
@@ -139,10 +133,7 @@ export default function ClientDetailPage() {
   function renderActiveTab() {
     if (activeTab === "summary") {
       return (
-        <SectionCard
-          title="Resumen operativo"
-          subtitle="Datos maestros y contexto comercial base del cliente."
-        >
+        <SectionCard title="Resumen operativo" subtitle="Datos maestros y contexto comercial base del cliente.">
           {client ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               <div>
@@ -169,17 +160,8 @@ export default function ClientDetailPage() {
 
     if (activeTab === "orders") {
       return (
-        <SectionCard
-          title="Historial de pedidos"
-          subtitle="Pedidos reales asociados al cliente con acceso directo a detalle y trazabilidad."
-        >
-          <DataTable
-            columns={orderColumns}
-            rows={orders}
-            rowKey="id"
-            emptyTitle="Sin pedidos asociados"
-            emptyDescription="Este cliente no tiene pedidos visibles para tu perfil en este momento."
-          />
+        <SectionCard title="Historial de pedidos" subtitle="Pedidos reales asociados al cliente con acceso directo a detalle y trazabilidad.">
+          <DataTable columns={orderColumns} rows={orders} rowKey="id" emptyTitle="Sin pedidos asociados" emptyDescription="Este cliente no tiene pedidos visibles para tu perfil en este momento." />
         </SectionCard>
       );
     }
@@ -192,77 +174,54 @@ export default function ClientDetailPage() {
       return <PlaceholderPanel title="Facturas" description="Estructura preparada para la futura pestaña de facturas del cliente." />;
     }
 
-    return <PlaceholderPanel title="Incidencias" description="Estructura preparada para la futura pestaña de incidencias del cliente." />;
+    return (
+      <SectionCard title="Incidencias" subtitle="Acceso rápido al módulo central de incidencias para este cliente.">
+        <div className="flex flex-wrap gap-3">
+          <Link to="/incidents" className="inline-flex rounded-md border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900">
+            Ver incidencias
+          </Link>
+          <Link to={`/incidents/new?clientId=${clientId}`} className="inline-flex rounded-md border border-slate-900 px-4 py-2.5 text-sm font-medium text-slate-900 transition hover:bg-slate-900 hover:text-white">
+            Nueva incidencia para este cliente
+          </Link>
+        </div>
+      </SectionCard>
+    );
   }
 
   return (
     <>
-      <Header
-        title={isLoading ? "Cliente" : client?.name || "Cliente"}
-        subtitle="Ficha base del cliente con resumen operativo y navegación comercial hacia sus pedidos."
-      />
+      <Header title={isLoading ? "Cliente" : client?.name || "Cliente"} subtitle="Ficha base del cliente con resumen operativo y navegación comercial hacia sus pedidos." />
 
       <main className="flex-1 px-8 py-8">
         {error ? <ErrorState title="No se pudo cargar la ficha de cliente." message={error} /> : null}
 
         <div className="mb-6 flex items-center gap-3 text-sm text-slate-500">
-          <Link to="/clients" className="font-medium text-slate-700 hover:text-slate-900">
-            Clientes
-          </Link>
+          <Link to="/clients" className="font-medium text-slate-700 hover:text-slate-900">Clientes</Link>
           <span>/</span>
           <span>{client?.name || "Ficha"}</span>
         </div>
 
-        <SectionCard
-          title="Cabecera del cliente"
-          subtitle="Datos maestros principales del cliente y punto de acceso a su futura vista 360."
-        >
+        <SectionCard title="Cabecera del cliente" subtitle="Datos maestros principales del cliente y punto de acceso a su futura vista 360.">
           {isLoading ? (
             <LoadingState lines={4} />
           ) : client ? (
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cliente</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">{client.name}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">CIF/NIF</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">{client.tax_id || "-"}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Email</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">{client.email || "-"}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Teléfono</p>
-                <p className="mt-2 text-lg font-semibold text-slate-900">{client.phone || "-"}</p>
-              </div>
+              <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Cliente</p><p className="mt-2 text-lg font-semibold text-slate-900">{client.name}</p></div>
+              <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">CIF/NIF</p><p className="mt-2 text-lg font-semibold text-slate-900">{client.tax_id || "-"}</p></div>
+              <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Email</p><p className="mt-2 text-lg font-semibold text-slate-900">{client.email || "-"}</p></div>
+              <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Teléfono</p><p className="mt-2 text-lg font-semibold text-slate-900">{client.phone || "-"}</p></div>
             </div>
           ) : null}
         </SectionCard>
 
         <section className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="h-[144px] animate-pulse rounded-md border border-slate-200 bg-white shadow-panel" />
-              ))
-            : summaryCards.map((card) => <SummaryCard key={card.title} {...card} />)}
+          {isLoading ? Array.from({ length: 4 }).map((_, index) => <div key={index} className="h-[144px] animate-pulse rounded-md border border-slate-200 bg-white shadow-panel" />) : summaryCards.map((card) => <SummaryCard key={card.title} {...card} />)}
         </section>
 
         <section className="mt-6">
           <div className="flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-panel">
             {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveTab(tab.key)}
-                className={[
-                  "rounded-md px-4 py-2.5 text-sm font-medium transition",
-                  activeTab === tab.key
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-                ].join(" ")}
-              >
+              <button key={tab.key} type="button" onClick={() => setActiveTab(tab.key)} className={["rounded-md px-4 py-2.5 text-sm font-medium transition", activeTab === tab.key ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"].join(" ")}>
                 {tab.label}
               </button>
             ))}

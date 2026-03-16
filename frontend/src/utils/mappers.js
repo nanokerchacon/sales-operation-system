@@ -1,11 +1,15 @@
 import { translateStatus } from "../services/statusTranslation";
 
 export function getPriorityTone(value) {
-  if (value === "high" || value === "Alta") {
+  if (["critica", "critical"].includes(value)) {
+    return "critical";
+  }
+
+  if (["high", "alta", "Alta"].includes(value)) {
     return "high";
   }
 
-  if (value === "medium" || value === "Media") {
+  if (["medium", "media", "Media"].includes(value)) {
     return "medium";
   }
 

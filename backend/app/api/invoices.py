@@ -6,9 +6,10 @@ from app.database.session import get_db
 from app.models.delivery import DeliveryItem
 from app.models.invoice import Invoice, InvoiceItem
 from app.models.order import Order, OrderItem
-from app.schemas.invoice import InvoiceCreate, InvoiceRead
-from app.services.access_control import CurrentUser, apply_invoice_scope, require_order_access, require_permission
+from app.schemas.invoice import InvoiceCreate, InvoiceDetailResponse, InvoiceListItem, InvoiceRead
+from app.services.access_control import CurrentUser, require_order_access, require_permission
 from app.services.invoice_documents import resolve_invoice_document_metadata
+from app.services.invoices import get_invoice_detail, list_invoices_overview
 
 
 router = APIRouter()
@@ -77,11 +78,21 @@ def create_invoice(
     )
 
 
-@router.get("", response_model=list[InvoiceRead])
+@router.get("", response_model=list[InvoiceListItem])
 def list_invoices(
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(require_permission("invoices.view")),
-) -> list[Invoice]:
-    query = db.query(Invoice).options(selectinload(Invoice.items))
-    query = apply_invoice_scope(query, current_user.access_context)
-    return query.all()
+) -> list[dict[str, object]]:
+    return list_invoices_overview(db, current_user.access_context)
+
+
+@router.get("/{invoice_id}", response_model=InvoiceDetailResponse)
+def invoice_detail(
+    invoice_id: int,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("invoices.view")),
+) -> dict[str, object]:
+    invoice = get_invoice_detail(db, invoice_id, current_user.access_context)
+    if invoice is None:
+        raise HTTPException(status_code=404, detail="Invoice not found")
+    return invoice
