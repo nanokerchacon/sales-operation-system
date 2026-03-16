@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.database.session import get_db
 from app.models.order import Order, OrderItem
-from app.schemas.order import OrderCreate, OrderRead
+from app.schemas.order import OrderCreate, OrderDetailResponse, OrderListItem, OrderRead
 from app.schemas.order_traceability import OrderTraceabilityResponse
-from app.services.access_control import CurrentUser, apply_order_scope, require_permission
-from app.services.orders import get_order_traceability
+from app.services.access_control import CurrentUser, require_permission
+from app.services.orders import get_order_detail, get_order_traceability, list_orders_overview
 
 
 router = APIRouter()
@@ -40,14 +40,21 @@ def create_order(
     )
 
 
-@router.get("", response_model=list[OrderRead])
+@router.get("", response_model=list[OrderListItem])
 def list_orders(
     db: Session = Depends(get_db),
     current_user: CurrentUser = Depends(require_permission("orders.view")),
-) -> list[Order]:
-    query = db.query(Order).options(selectinload(Order.items))
-    query = apply_order_scope(query, current_user.access_context)
-    return query.all()
+) -> list[dict[str, object]]:
+    return list_orders_overview(db, current_user.access_context)
+
+
+@router.get("/{order_id}", response_model=OrderDetailResponse)
+def order_detail(
+    order_id: int,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("orders.view")),
+) -> dict[str, object]:
+    return get_order_detail(db, order_id, current_user.access_context)
 
 
 @router.get("/{order_id}/traceability", response_model=OrderTraceabilityResponse)
@@ -57,3 +64,4 @@ def order_traceability(
     current_user: CurrentUser = Depends(require_permission("orders.view")),
 ) -> OrderTraceabilityResponse:
     return get_order_traceability(db, order_id, current_user.access_context)
+

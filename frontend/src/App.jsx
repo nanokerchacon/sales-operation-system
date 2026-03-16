@@ -7,6 +7,8 @@ import ClientsPage from "./pages/ClientsPage";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import ModulePlaceholderPage from "./pages/ModulePlaceholderPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
+import OrdersPage from "./pages/OrdersPage";
 import OrderTraceabilityPage from "./pages/OrderTraceabilityPage";
 
 function ProtectedModule({ permission, title, description }) {
@@ -55,6 +57,22 @@ export default function App() {
           }
         />
         <Route
+          path="orders"
+          element={
+            <RequirePermission permission="orders.view">
+              <OrdersPage />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="orders/:orderId"
+          element={
+            <RequirePermission permission="orders.view">
+              <OrderDetailPage />
+            </RequirePermission>
+          }
+        />
+        <Route
           path="orders/:orderId/traceability"
           element={
             <RequirePermission permission="orders.view">
@@ -62,7 +80,6 @@ export default function App() {
             </RequirePermission>
           }
         />
-        <Route path="orders" element={<ProtectedModule permission="orders.view" title="Pedidos" description="Vista protegida del módulo de pedidos." />} />
         <Route path="deliveries" element={<ProtectedModule permission="deliveries.view" title="Albaranes" description="Vista protegida del módulo de albaranes." />} />
         <Route path="invoices" element={<ProtectedModule permission="invoices.view" title="Facturas" description="Vista protegida del módulo de facturas." />} />
         <Route path="products" element={<ProtectedModule permission="products.view" title="Productos" description="Vista protegida del módulo de productos." />} />

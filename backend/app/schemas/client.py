@@ -65,7 +65,9 @@ class ClientOrderHistoryItem(BaseModel):
     order_date: datetime | None = None
     status: str
     total_amount: float
-    source: str
+    delivery_status: str | None = None
+    invoice_status: str | None = None
+    source: str | None = None
 
 
 class ClientOrdersResponse(BaseModel):

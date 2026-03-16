@@ -78,7 +78,7 @@ export default function ClientDetailPage() {
   const orderColumns = [
     {
       key: "order_number",
-      header: "Número",
+      header: "Pedido",
       render: (row) => (
         <div>
           <p className="font-semibold text-slate-900">{row.order_number}</p>
@@ -97,20 +97,38 @@ export default function ClientDetailPage() {
       render: (row) => <OperationalStatusBadge value={row.status} />,
     },
     {
+      key: "delivery_status",
+      header: "Entrega",
+      render: (row) => <OperationalStatusBadge value={row.delivery_status} />,
+    },
+    {
+      key: "invoice_status",
+      header: "Facturación",
+      render: (row) => <OperationalStatusBadge value={row.invoice_status} />,
+    },
+    {
       key: "total_amount",
       header: "Total",
       render: (row) => formatCurrency(row.total_amount),
     },
     {
-      key: "traceability",
+      key: "action",
       header: "Acción",
       render: (row) => (
-        <Link
-          to={`/orders/${row.id}/traceability`}
-          className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
-        >
-          Ver pedido
-        </Link>
+        <div className="flex flex-col gap-1">
+          <Link
+            to={`/orders/${row.id}`}
+            className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
+          >
+            Abrir pedido
+          </Link>
+          <Link
+            to={`/orders/${row.id}/traceability`}
+            className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
+          >
+            Ver trazabilidad
+          </Link>
+        </div>
       ),
     },
   ];
@@ -153,7 +171,7 @@ export default function ClientDetailPage() {
       return (
         <SectionCard
           title="Historial de pedidos"
-          subtitle="Pedidos reales asociados al cliente visible para el perfil actual."
+          subtitle="Pedidos reales asociados al cliente con acceso directo a detalle y trazabilidad."
         >
           <DataTable
             columns={orderColumns}
@@ -181,7 +199,7 @@ export default function ClientDetailPage() {
     <>
       <Header
         title={isLoading ? "Cliente" : client?.name || "Cliente"}
-        subtitle="Ficha base del cliente con resumen operativo y primer historial comercial real."
+        subtitle="Ficha base del cliente con resumen operativo y navegación comercial hacia sus pedidos."
       />
 
       <main className="flex-1 px-8 py-8">

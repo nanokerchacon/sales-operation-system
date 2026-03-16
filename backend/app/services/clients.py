@@ -5,25 +5,14 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.client import Client
-from app.models.order import Order, OrderItem
+from app.models.order import Order
 from app.services.access_control import AccessContext, apply_client_scope, apply_order_scope
+from app.services.orders import build_order_list_item
 
 
 
 def build_client_location(client: Client) -> str:
     return client.address or "-"
-
-
-
-def build_order_display_number(order: Order) -> str:
-    if order.order_number:
-        return order.order_number
-    return f"PED-{order.id:06d}"
-
-
-
-def _order_amount_expression():
-    return func.coalesce(Order.total_amount, Order.subtotal, func.coalesce(func.sum(OrderItem.line_amount), 0.0))
 
 
 
@@ -136,26 +125,11 @@ def get_client_orders(db: Session, access_context: AccessContext, client_id: int
         .all()
     )
 
-    order_ids = [order.id for order in orders]
-    line_amounts = {}
-    if order_ids:
-        for order_id, total in (
-            db.query(OrderItem.order_id, func.coalesce(func.sum(OrderItem.line_amount), 0.0))
-            .filter(OrderItem.order_id.in_(order_ids))
-            .group_by(OrderItem.order_id)
-            .all()
-        ):
-            line_amounts[order_id] = float(total or 0.0)
-
     return {
         "client_id": client_id,
         "orders": [
             {
-                "id": order.id,
-                "order_number": build_order_display_number(order),
-                "order_date": order.order_date,
-                "status": order.status,
-                "total_amount": float(order.total_amount or order.subtotal or line_amounts.get(order.id, 0.0)),
+                **build_order_list_item(db, order, client),
                 "source": order.source,
             }
             for order in orders
