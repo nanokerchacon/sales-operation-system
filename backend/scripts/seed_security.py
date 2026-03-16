@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from app.core.config import APP_ENV
 from app.core.security import hash_password
 from app.database.session import SessionLocal
 from app.models.auth import ClientAssignment, Permission, Role, RolePermission, User, UserRole
@@ -64,98 +72,125 @@ TEST_USERS = [
     ("admin@local", "Local123!", "Administrador Demo", "admin"),
 ]
 
+DEVELOPMENT_ENVS = {"development", "dev", "local"}
+
+
+def should_manage_test_users() -> bool:
+    return APP_ENV in DEVELOPMENT_ENVS
+
+
+def is_local_test_user(email: str) -> bool:
+    return email.strip().lower().endswith("@local")
+
 
 def main() -> None:
-    db = SessionLocal()
-    try:
-        role_map = {}
-        for code, name in ROLE_DEFINITIONS.items():
-            role = db.query(Role).filter(Role.code == code).first()
-            if role is None:
-                role = Role(code=code, name=name, description=name)
-                db.add(role)
-                db.flush()
-            role_map[code] = role
+    with SessionLocal() as db:
+        try:
+            role_map = {}
+            for code, name in ROLE_DEFINITIONS.items():
+                role = db.query(Role).filter(Role.code == code).first()
+                if role is None:
+                    role = Role(code=code, name=name, description=name)
+                    db.add(role)
+                    db.flush()
+                role_map[code] = role
 
-        permission_map = {}
-        for code, (module, action, description, is_sensitive) in PERMISSIONS.items():
-            permission = db.query(Permission).filter(Permission.code == code).first()
-            if permission is None:
-                permission = Permission(
-                    code=code,
-                    module=module,
-                    action=action,
-                    description=description,
-                    is_sensitive=is_sensitive,
-                )
-                db.add(permission)
-                db.flush()
-            permission_map[code] = permission
+            permission_map = {}
+            for code, (module, action, description, is_sensitive) in PERMISSIONS.items():
+                permission = db.query(Permission).filter(Permission.code == code).first()
+                if permission is None:
+                    permission = Permission(
+                        code=code,
+                        module=module,
+                        action=action,
+                        description=description,
+                        is_sensitive=is_sensitive,
+                    )
+                    db.add(permission)
+                    db.flush()
+                permission_map[code] = permission
 
-        for role_code, permission_codes in ROLE_PERMISSIONS.items():
-            role = role_map[role_code]
-            for permission_code in permission_codes:
-                permission = permission_map[permission_code]
-                exists = (
-                    db.query(RolePermission)
-                    .filter(RolePermission.role_id == role.id, RolePermission.permission_id == permission.id)
+            for role_code, permission_codes in ROLE_PERMISSIONS.items():
+                role = role_map[role_code]
+                for permission_code in permission_codes:
+                    permission = permission_map[permission_code]
+                    exists = (
+                        db.query(RolePermission)
+                        .filter(RolePermission.role_id == role.id, RolePermission.permission_id == permission.id)
+                        .first()
+                    )
+                    if exists is None:
+                        db.add(RolePermission(role_id=role.id, permission_id=permission.id))
+
+            user_map = {}
+            managed_test_users = 0
+            skipped_test_users = 0
+            manage_test_users = should_manage_test_users()
+            for email, password, full_name, default_role_code in TEST_USERS:
+                normalized_email = email.strip().lower()
+                if not is_local_test_user(normalized_email):
+                    continue
+
+                if not manage_test_users:
+                    skipped_test_users += 1
+                    continue
+
+                user = db.query(User).filter(User.email == normalized_email).first()
+                password_hash = hash_password(password)
+                if user is None:
+                    user = User(
+                        email=normalized_email,
+                        password_hash=password_hash,
+                        full_name=full_name,
+                        default_role_code=default_role_code,
+                        is_active=True,
+                    )
+                    db.add(user)
+                    db.flush()
+                else:
+                    user.password_hash = password_hash
+                    user.full_name = full_name
+                    user.default_role_code = default_role_code
+                    user.is_active = True
+                    db.add(user)
+
+                managed_test_users += 1
+                user_map[default_role_code] = user
+
+                role = role_map[default_role_code]
+                if (
+                    db.query(UserRole)
+                    .filter(UserRole.user_id == user.id, UserRole.role_id == role.id)
                     .first()
-                )
-                if exists is None:
-                    db.add(RolePermission(role_id=role.id, permission_id=permission.id))
+                    is None
+                ):
+                    db.add(UserRole(user_id=user.id, role_id=role.id))
 
-        user_map = {}
-        for email, password, full_name, default_role_code in TEST_USERS:
-            user = db.query(User).filter(User.email == email).first()
-            password_hash = hash_password(password)
-            if user is None:
-                user = User(
-                    email=email,
-                    password_hash=password_hash,
-                    full_name=full_name,
-                    default_role_code=default_role_code,
-                    is_active=True,
-                )
-                db.add(user)
-                db.flush()
-            else:
-                user.password_hash = password_hash
-                user.full_name = full_name
-                user.default_role_code = default_role_code
-                user.is_active = True
-                db.add(user)
+            commercial = user_map.get("comercial")
+            if commercial is not None:
+                client_ids = [row.id for row in db.query(Client.id).order_by(Client.id.asc()).limit(3).all()]
+                for client_id in client_ids:
+                    exists = (
+                        db.query(ClientAssignment)
+                        .filter(ClientAssignment.client_id == client_id, ClientAssignment.user_id == commercial.id)
+                        .first()
+                    )
+                    if exists is None:
+                        db.add(ClientAssignment(client_id=client_id, user_id=commercial.id, assignment_role="account_owner"))
 
-            user_map[default_role_code] = user
-
-            role = role_map[default_role_code]
-            if (
-                db.query(UserRole)
-                .filter(UserRole.user_id == user.id, UserRole.role_id == role.id)
-                .first()
-                is None
-            ):
-                db.add(UserRole(user_id=user.id, role_id=role.id))
-
-        commercial = user_map.get("comercial")
-        if commercial is not None:
-            client_ids = [row.id for row in db.query(Client.id).order_by(Client.id.asc()).limit(3).all()]
-            for client_id in client_ids:
-                exists = (
-                    db.query(ClientAssignment)
-                    .filter(ClientAssignment.client_id == client_id, ClientAssignment.user_id == commercial.id)
-                    .first()
-                )
-                if exists is None:
-                    db.add(ClientAssignment(client_id=client_id, user_id=commercial.id, assignment_role="account_owner"))
-
-        db.commit()
-        print("Security seed completed")
-        for email, password, _, role_code in TEST_USERS:
-            print(f"- {email} / {password} ({role_code})")
-    finally:
-        db.close()
+            db.commit()
+            print("Security seed completed")
+            print(f"- app_env: {APP_ENV}")
+            print(f"- local test users managed: {managed_test_users}")
+            if skipped_test_users:
+                print(f"- local test users skipped outside development: {skipped_test_users}")
+            if managed_test_users:
+                for email, _, _, role_code in TEST_USERS:
+                    print(f"- seeded user: {email} ({role_code})")
+        except Exception:
+            db.rollback()
+            raise
 
 
 if __name__ == "__main__":
     main()
-
