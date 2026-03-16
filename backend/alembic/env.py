@@ -6,6 +6,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.database.session import Base, DATABASE_URL
+from app.models.auth import AuthSession, ClientAssignment, Permission, Role, RolePermission, User, UserRole
 from app.models.client import Client
 from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.invoice import Invoice, InvoiceItem

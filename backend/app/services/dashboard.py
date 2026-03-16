@@ -8,6 +8,7 @@ from app.models.client import Client
 from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.invoice import Invoice, InvoiceItem
 from app.models.order import Order, OrderItem
+from app.services.access_control import AccessContext, apply_order_scope
 from app.services.invoice_documents import (
     INVOICE_DOCUMENT_STATUS_ES,
     get_order_invoice_document_totals,
@@ -76,8 +77,10 @@ def build_order_number(order_id: int) -> str:
     return f"PED-{order_id:06d}"
 
 
-def _get_dashboard_orders(db: Session) -> list[Order]:
-    return db.query(Order).options(load_only(Order.id, Order.client_id, Order.status)).all()
+def _get_dashboard_orders(db: Session, access_context: AccessContext) -> list[Order]:
+    query = db.query(Order).options(load_only(Order.id, Order.client_id, Order.status))
+    query = apply_order_scope(query, access_context)
+    return query.all()
 
 
 def get_priority_for_order(
@@ -242,8 +245,8 @@ def get_aging_bucket(days_since_last_delivery: int) -> str:
     return "bucket_over_15_days"
 
 
-def get_operations_dashboard(db: Session) -> dict[str, int | float | dict[str, str]]:
-    orders = _get_dashboard_orders(db)
+def get_operations_dashboard(db: Session, access_context: AccessContext) -> dict[str, int | float | dict[str, str]]:
+    orders = _get_dashboard_orders(db, access_context)
     summary = {
         "total_orders": 0,
         "orders_with_issues": 0,
@@ -302,7 +305,7 @@ def get_operations_dashboard(db: Session) -> dict[str, int | float | dict[str, s
     return summary
 
 
-def get_order_status_summary(db: Session) -> dict[str, int | dict[str, str]]:
+def get_order_status_summary(db: Session, access_context: AccessContext) -> dict[str, int | dict[str, str]]:
     summary = {
         "ok": 0,
         "pending_delivery": 0,
@@ -312,17 +315,17 @@ def get_order_status_summary(db: Session) -> dict[str, int | dict[str, str]]:
         "labels_es": ORDER_STATUS_SUMMARY_LABELS_ES,
     }
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         summary[order_status_data["status"]] += 1
 
     return summary
 
 
-def get_orders_with_incidents(db: Session) -> list[dict[str, int | float | str | bool]]:
+def get_orders_with_incidents(db: Session, access_context: AccessContext) -> list[dict[str, int | float | str | bool]]:
     orders_with_incidents: list[dict[str, int | float | str | bool]] = []
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         if order_status_data["has_issue"]:
             orders_with_incidents.append(order_status_data)
@@ -331,10 +334,10 @@ def get_orders_with_incidents(db: Session) -> list[dict[str, int | float | str |
     return orders_with_incidents
 
 
-def get_pending_invoices(db: Session) -> list[dict[str, int | float | str]]:
+def get_pending_invoices(db: Session, access_context: AccessContext) -> list[dict[str, int | float | str]]:
     pending_invoices: list[dict[str, int | float | str]] = []
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         if order_status_data["pending_invoice_quantity"] <= 0:
             continue
@@ -368,10 +371,10 @@ def get_pending_invoices(db: Session) -> list[dict[str, int | float | str]]:
     return pending_invoices
 
 
-def get_pending_revenue(db: Session) -> list[dict[str, int | float | str]]:
+def get_pending_revenue(db: Session, access_context: AccessContext) -> list[dict[str, int | float | str]]:
     pending_revenue: list[dict[str, int | float | str]] = []
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         if order_status_data["pending_invoice_quantity"] <= 0:
             continue
@@ -420,10 +423,10 @@ def get_pending_revenue(db: Session) -> list[dict[str, int | float | str]]:
     return pending_revenue
 
 
-def get_work_queue(db: Session) -> list[dict[str, int | float | str]]:
+def get_work_queue(db: Session, access_context: AccessContext) -> list[dict[str, int | float | str]]:
     work_queue: list[dict[str, int | float | str]] = []
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         priority = get_priority_for_order(
             status=order_status_data["status"],
@@ -469,10 +472,10 @@ def get_work_queue(db: Session) -> list[dict[str, int | float | str]]:
     return work_queue
 
 
-def get_clients_with_incidents(db: Session) -> list[dict[str, int | float | str]]:
+def get_clients_with_incidents(db: Session, access_context: AccessContext) -> list[dict[str, int | float | str]]:
     clients_summary: dict[int, dict[str, int | float | str]] = {}
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         client_id = order_status_data["client_id"]
 
@@ -530,7 +533,7 @@ def get_clients_with_incidents(db: Session) -> list[dict[str, int | float | str]
     return clients_with_incidents
 
 
-def get_aging_invoices(db: Session) -> dict[str, float | dict[str, str]]:
+def get_aging_invoices(db: Session, access_context: AccessContext) -> dict[str, float | dict[str, str]]:
     summary = {
         "bucket_0_3_days": 0.0,
         "bucket_4_7_days": 0.0,
@@ -540,7 +543,7 @@ def get_aging_invoices(db: Session) -> dict[str, float | dict[str, str]]:
         "labels_es": AGING_LABELS_ES,
     }
 
-    for order in _get_dashboard_orders(db):
+    for order in _get_dashboard_orders(db, access_context):
         order_status_data = build_order_status_data(db, order)
         if order_status_data["pending_invoice_quantity"] <= 0:
             continue
@@ -551,4 +554,3 @@ def get_aging_invoices(db: Session) -> dict[str, float | dict[str, str]]:
         summary["total_pending_invoice_amount"] += amount_pending_invoice
 
     return summary
-

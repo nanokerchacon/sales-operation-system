@@ -1,10 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
-from app.database.session import SessionLocal
+from app.database.session import get_db
 from app.models.delivery import DeliveryItem
 from app.models.invoice import InvoiceItem
 from app.models.order import Order, OrderItem
+from app.services.access_control import CurrentUser, apply_order_scope, require_permission
 
 
 router = APIRouter()
@@ -38,54 +40,53 @@ def get_operation_status(
 
 
 @router.get("/status")
-def list_operations_status() -> list[dict[str, float | int | str]]:
-    db = SessionLocal()
-    try:
-        orders = db.query(Order).all()
-        response: list[dict[str, float | int | str]] = []
+def list_operations_status(
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("dashboard.view")),
+) -> list[dict[str, float | int | str]]:
+    orders = apply_order_scope(db.query(Order), current_user.access_context).all()
+    response: list[dict[str, float | int | str]] = []
 
-        for order in orders:
-            ordered_quantity = (
-                db.query(func.coalesce(func.sum(OrderItem.quantity), 0.0))
-                .filter(OrderItem.order_id == order.id)
-                .scalar()
-            )
-            delivered_quantity = (
-                db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
-                .join(OrderItem, OrderItem.id == DeliveryItem.order_item_id)
-                .filter(OrderItem.order_id == order.id)
-                .scalar()
-            )
-            invoiced_quantity = (
-                db.query(func.coalesce(func.sum(InvoiceItem.quantity), 0.0))
-                .join(OrderItem, OrderItem.id == InvoiceItem.order_item_id)
-                .filter(OrderItem.order_id == order.id)
-                .scalar()
-            )
+    for order in orders:
+        ordered_quantity = (
+            db.query(func.coalesce(func.sum(OrderItem.quantity), 0.0))
+            .filter(OrderItem.order_id == order.id)
+            .scalar()
+        )
+        delivered_quantity = (
+            db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
+            .join(OrderItem, OrderItem.id == DeliveryItem.order_item_id)
+            .filter(OrderItem.order_id == order.id)
+            .scalar()
+        )
+        invoiced_quantity = (
+            db.query(func.coalesce(func.sum(InvoiceItem.quantity), 0.0))
+            .join(OrderItem, OrderItem.id == InvoiceItem.order_item_id)
+            .filter(OrderItem.order_id == order.id)
+            .scalar()
+        )
 
-            pending_delivery_quantity = ordered_quantity - delivered_quantity
-            pending_invoice_quantity = ordered_quantity - invoiced_quantity
-            operation_status = get_operation_status(
-                ordered_quantity=ordered_quantity,
-                delivered_quantity=delivered_quantity,
-                invoiced_quantity=invoiced_quantity,
-            )
+        pending_delivery_quantity = ordered_quantity - delivered_quantity
+        pending_invoice_quantity = ordered_quantity - invoiced_quantity
+        operation_status = get_operation_status(
+            ordered_quantity=ordered_quantity,
+            delivered_quantity=delivered_quantity,
+            invoiced_quantity=invoiced_quantity,
+        )
 
-            response.append(
-                {
-                    "order_id": order.id,
-                    "client_id": order.client_id,
-                    "status": order.status,
-                    "ordered_quantity": ordered_quantity,
-                    "delivered_quantity": delivered_quantity,
-                    "invoiced_quantity": invoiced_quantity,
-                    "pending_delivery_quantity": pending_delivery_quantity,
-                    "pending_invoice_quantity": pending_invoice_quantity,
-                    "operation_status": operation_status,
-                    "operation_status_es": OPERATION_STATUS_ES[operation_status],
-                }
-            )
+        response.append(
+            {
+                "order_id": order.id,
+                "client_id": order.client_id,
+                "status": order.status,
+                "ordered_quantity": ordered_quantity,
+                "delivered_quantity": delivered_quantity,
+                "invoiced_quantity": invoiced_quantity,
+                "pending_delivery_quantity": pending_delivery_quantity,
+                "pending_invoice_quantity": pending_invoice_quantity,
+                "operation_status": operation_status,
+                "operation_status_es": OPERATION_STATUS_ES[operation_status],
+            }
+        )
 
-        return response
-    finally:
-        db.close()
+    return response

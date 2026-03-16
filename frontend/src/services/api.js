@@ -1,16 +1,33 @@
+import { getStoredToken } from "../auth/tokenStorage";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
+export class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
+
 async function request(path, options = {}) {
+  const token = getStoredToken();
+  const headers = {
+    Accept: "application/json",
+    ...(options.body ? { "Content-Type": "application/json" } : {}),
+    ...options.headers,
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {
-    throw new Error(`Error ${response.status} al consultar ${path}`);
+    throw new ApiError(`Error ${response.status} al consultar ${path}`, response.status);
   }
 
   return response.json();
@@ -28,6 +45,15 @@ export const dashboardApi = {
   getClientsWithIncidents: () => request("/dashboard/clients-with-incidents"),
   getClientRisk: () => request("/dashboard/client-risk"),
   getAgingInvoices: () => request("/dashboard/aging-invoices"),
+};
+
+export const authApi = {
+  login: (body) =>
+    request("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  me: () => request("/auth/me"),
 };
 
 export const apiClient = {

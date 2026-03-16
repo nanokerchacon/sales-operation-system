@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import AgingInvoicesChart from "../components/charts/AgingInvoicesChart";
 import DataTable from "../components/DataTable";
 import EmptyState from "../components/EmptyState";
@@ -11,7 +12,7 @@ import SectionCard from "../components/SectionCard";
 import StatusSummaryCards from "../components/StatusSummaryCards";
 import useDashboardData from "../hooks/useDashboardData";
 import { formatCurrency, formatInteger, formatNumber } from "../utils/formatters";
-import { getDisplayStatus, navigateTo } from "../utils/mappers";
+import { getDisplayStatus } from "../utils/mappers";
 
 function buildKpis(operations) {
   if (!operations) {
@@ -100,6 +101,7 @@ function SummaryMetric({ label, value, accent = false }) {
 }
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const { data, loading, error, lastUpdated } = useDashboardData();
   const kpis = buildKpis(data.operations);
   const revenueSummary = buildRevenueSummary(data.pendingRevenue);
@@ -111,7 +113,7 @@ export default function DashboardPage() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          onClick={() => navigate(`/orders/${row.order_id}/traceability`)}
           className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
         >
           {row.order_number}
@@ -215,7 +217,7 @@ export default function DashboardPage() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          onClick={() => navigate(`/orders/${row.order_id}/traceability`)}
           className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
         >
           {row.order_number || `#${row.order_id}`}
@@ -251,7 +253,7 @@ export default function DashboardPage() {
       render: (row) => (
         <button
           type="button"
-          onClick={() => navigateTo(`/orders/${row.order_id}/traceability`)}
+          onClick={() => navigate(`/orders/${row.order_id}/traceability`)}
           className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
         >
           {row.order_number || `#${row.order_id}`}
@@ -358,13 +360,13 @@ export default function DashboardPage() {
             >
               <div className="operational-queue-table-wrapper w-full overflow-x-auto [&>div]:overflow-visible [&_table]:min-w-[1200px] [&_table]:w-full">
                 <DataTable
-                columns={workQueueColumns}
-                rows={data.workQueue}
-                loading={loading}
-                rowKey="order_id"
-                emptyTitle="Sin cola operativa"
-                emptyDescription="No existen pedidos para monitorizar en este momento."
-              />
+                  columns={workQueueColumns}
+                  rows={data.workQueue}
+                  loading={loading}
+                  rowKey="order_id"
+                  emptyTitle="Sin cola operativa"
+                  emptyDescription="No existen pedidos para monitorizar en este momento."
+                />
               </div>
             </SectionCard>
 
@@ -475,7 +477,3 @@ export default function DashboardPage() {
     </>
   );
 }
-
-
-
-

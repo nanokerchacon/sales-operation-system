@@ -1,4 +1,64 @@
-import { navigationItems, navigateTo } from "../utils/mappers";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
+
+const navigationItems = [
+  {
+    key: "dashboard",
+    label: "Dashboard",
+    to: "/dashboard",
+    permission: "dashboard.view",
+    roles: ["direccion_general", "comercial", "finanzas", "admin"],
+  },
+  {
+    key: "clients",
+    label: "Clientes",
+    to: "/clients",
+    permission: "clients.view",
+    roles: ["direccion_general", "comercial", "finanzas", "admin"],
+  },
+  {
+    key: "orders",
+    label: "Pedidos",
+    to: "/orders",
+    permission: "orders.view",
+    roles: ["direccion_general", "comercial", "admin"],
+  },
+  {
+    key: "deliveries",
+    label: "Albaranes",
+    to: "/deliveries",
+    permission: "deliveries.view",
+    roles: ["direccion_general", "finanzas", "admin"],
+  },
+  {
+    key: "invoices",
+    label: "Facturas",
+    to: "/invoices",
+    permission: "invoices.view",
+    roles: ["direccion_general", "finanzas", "admin"],
+  },
+  {
+    key: "incidents",
+    label: "Incidencias",
+    to: "/incidents",
+    permission: "incidents.view",
+    roles: ["direccion_general", "comercial", "finanzas", "admin"],
+  },
+  {
+    key: "products",
+    label: "Productos",
+    to: "/products",
+    permission: "products.view",
+    roles: ["direccion_general", "comercial", "admin"],
+  },
+  {
+    key: "admin",
+    label: "Administración",
+    to: "/admin/users",
+    permission: "admin.view",
+    roles: ["direccion_general", "admin"],
+  },
+];
 
 function GridIcon() {
   return (
@@ -12,7 +72,10 @@ function GridIcon() {
 }
 
 export default function Sidebar() {
-  const pathname = window.location.pathname;
+  const { user } = useAuth();
+  const visibleItems = navigationItems.filter(
+    (item) => user?.permissions?.includes(item.permission) && item.roles.includes(user?.primary_role),
+  );
 
   return (
     <aside className="flex min-h-screen w-[272px] flex-col border-r border-slate-800 bg-slate-950 text-slate-100">
@@ -37,33 +100,36 @@ export default function Sidebar() {
           Navegación
         </p>
         <ul className="mt-4 space-y-1.5">
-          {navigationItems.map((item) => (
+          {visibleItems.map((item) => (
             <li key={item.key}>
-              <button
-                type="button"
-                onClick={() => navigateTo(item.href)}
-                className={[
-                  "flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm font-medium transition-colors",
-                  pathname === item.href && item.href
-                    ? "bg-slate-900 text-white shadow-soft"
-                    : item.href
-                      ? "text-slate-400 hover:bg-slate-900/70 hover:text-slate-100"
-                      : "cursor-default text-slate-500",
-                ].join(" ")}
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  [
+                    "flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-slate-900 text-white shadow-soft"
+                      : "text-slate-400 hover:bg-slate-900/70 hover:text-slate-100",
+                  ].join(" ")
+                }
               >
-                <span
-                  className={[
-                    "flex h-9 w-9 items-center justify-center rounded-md border",
-                    pathname === item.href && item.href
-                      ? "border-slate-700 bg-slate-800 text-slate-100"
-                      : "border-slate-800 bg-slate-900 text-slate-500",
-                  ].join(" ")}
-                >
-                  <GridIcon />
-                </span>
-                <span className="flex-1">{item.label}</span>
-                {pathname === item.href && item.href ? <span className="h-2 w-2 rounded-full bg-slate-300" /> : null}
-              </button>
+                {({ isActive }) => (
+                  <>
+                    <span
+                      className={[
+                        "flex h-9 w-9 items-center justify-center rounded-md border",
+                        isActive
+                          ? "border-slate-700 bg-slate-800 text-slate-100"
+                          : "border-slate-800 bg-slate-900 text-slate-500",
+                      ].join(" ")}
+                    >
+                      <GridIcon />
+                    </span>
+                    <span className="flex-1">{item.label}</span>
+                    {isActive ? <span className="h-2 w-2 rounded-full bg-slate-300" /> : null}
+                  </>
+                )}
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -72,8 +138,8 @@ export default function Sidebar() {
       <div className="border-t border-slate-800 px-6 py-5">
         <div className="rounded-md border border-slate-800 bg-slate-900/70 px-4 py-4">
           <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Estado del sistema</p>
-          <p className="mt-2 text-sm font-semibold text-slate-100">Panel operativo en línea</p>
-          <p className="mt-1 text-sm text-slate-400">Visibilidad ejecutiva sobre pedidos, facturacion y control operativo.</p>
+          <p className="mt-2 text-sm font-semibold text-slate-100">Sesión protegida activa</p>
+          <p className="mt-1 text-sm text-slate-400">Navegación y acceso filtrados por rol y permisos.</p>
         </div>
       </div>
     </aside>

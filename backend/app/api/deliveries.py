@@ -1,98 +1,101 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import Session, selectinload
 
-from app.database.session import SessionLocal
+from app.database.session import get_db
 from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.order import Order, OrderItem
 from app.schemas.delivery import DeliveryNoteCreate, DeliveryNoteRead
+from app.services.access_control import CurrentUser, apply_delivery_scope, require_order_access, require_permission
 
 
 router = APIRouter()
 
 
 @router.post("", response_model=DeliveryNoteRead)
-def create_delivery(delivery: DeliveryNoteCreate) -> DeliveryNote:
-    db = SessionLocal()
-    try:
-        db_delivery = DeliveryNote(order_id=delivery.order_id)
-        db.add(db_delivery)
-        db.flush()
+def create_delivery(
+    delivery: DeliveryNoteCreate,
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("deliveries.create")),
+) -> DeliveryNote:
+    order = db.get(Order, delivery.order_id)
+    require_order_access(db, current_user.access_context, order)
 
-        requested_quantities: dict[int, float] = {}
+    db_delivery = DeliveryNote(order_id=delivery.order_id)
+    db.add(db_delivery)
+    db.flush()
 
-        for item in delivery.items:
-            order_item = db.get(OrderItem, item.order_item_id)
-            if order_item is None:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"La línea de pedido {item.order_item_id} no existe.",
-                )
+    requested_quantities: dict[int, float] = {}
 
-            ordered_quantity = order_item.quantity
-
-            delivered_quantity = (
-                db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
-                .filter(DeliveryItem.order_item_id == item.order_item_id)
-                .scalar()
-            )
-            delivered_quantity += requested_quantities.get(item.order_item_id, 0.0)
-
-            remaining = ordered_quantity - delivered_quantity
-            requested_quantity = item.quantity
-
-            if requested_quantity > remaining:
-                raise HTTPException(
-                    status_code=400,
-                    detail=(
-                        f"No se puede entregar más cantidad de la pedida en la línea "
-                        f"{item.order_item_id} del pedido. Cantidad pedida: "
-                        f"{ordered_quantity}. Ya entregada: {delivered_quantity}. "
-                        f"Pendiente: {remaining}. Se intenta entregar ahora: "
-                        f"{requested_quantity}."
-                    ),
-                )
-
-            db.add(DeliveryItem(delivery_note_id=db_delivery.id, **item.model_dump()))
-            requested_quantities[item.order_item_id] = (
-                requested_quantities.get(item.order_item_id, 0.0) + requested_quantity
+    for item in delivery.items:
+        order_item = db.get(OrderItem, item.order_item_id)
+        if order_item is None:
+            raise HTTPException(
+                status_code=400,
+                detail=f"La línea de pedido {item.order_item_id} no existe.",
             )
 
-        db.flush()
+        ordered_quantity = order_item.quantity
 
-        total_ordered_quantity = (
-            db.query(func.coalesce(func.sum(OrderItem.quantity), 0.0))
-            .filter(OrderItem.order_id == delivery.order_id)
-            .scalar()
-        )
-        total_delivered_quantity = (
+        delivered_quantity = (
             db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
-            .join(OrderItem, OrderItem.id == DeliveryItem.order_item_id)
-            .filter(OrderItem.order_id == delivery.order_id)
+            .filter(DeliveryItem.order_item_id == item.order_item_id)
             .scalar()
         )
+        delivered_quantity += requested_quantities.get(item.order_item_id, 0.0)
 
-        if total_delivered_quantity == total_ordered_quantity:
-            order = db.get(Order, delivery.order_id)
-            if order is not None:
-                order.status = "completed"
+        remaining = ordered_quantity - delivered_quantity
+        requested_quantity = item.quantity
 
-        db.commit()
+        if requested_quantity > remaining:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"No se puede entregar más cantidad de la pedida en la línea "
+                    f"{item.order_item_id} del pedido. Cantidad pedida: "
+                    f"{ordered_quantity}. Ya entregada: {delivered_quantity}. "
+                    f"Pendiente: {remaining}. Se intenta entregar ahora: "
+                    f"{requested_quantity}."
+                ),
+            )
 
-        return (
-            db.query(DeliveryNote)
-            .options(selectinload(DeliveryNote.items))
-            .filter(DeliveryNote.id == db_delivery.id)
-            .first()
+        db.add(DeliveryItem(delivery_note_id=db_delivery.id, **item.model_dump()))
+        requested_quantities[item.order_item_id] = (
+            requested_quantities.get(item.order_item_id, 0.0) + requested_quantity
         )
-    finally:
-        db.close()
+
+    db.flush()
+
+    total_ordered_quantity = (
+        db.query(func.coalesce(func.sum(OrderItem.quantity), 0.0))
+        .filter(OrderItem.order_id == delivery.order_id)
+        .scalar()
+    )
+    total_delivered_quantity = (
+        db.query(func.coalesce(func.sum(DeliveryItem.quantity), 0.0))
+        .join(OrderItem, OrderItem.id == DeliveryItem.order_item_id)
+        .filter(OrderItem.order_id == delivery.order_id)
+        .scalar()
+    )
+
+    if total_delivered_quantity == total_ordered_quantity and order is not None:
+        order.status = "completed"
+
+    db.commit()
+
+    return (
+        db.query(DeliveryNote)
+        .options(selectinload(DeliveryNote.items))
+        .filter(DeliveryNote.id == db_delivery.id)
+        .first()
+    )
 
 
 @router.get("", response_model=list[DeliveryNoteRead])
-def list_deliveries() -> list[DeliveryNote]:
-    db = SessionLocal()
-    try:
-        return db.query(DeliveryNote).options(selectinload(DeliveryNote.items)).all()
-    finally:
-        db.close()
+def list_deliveries(
+    db: Session = Depends(get_db),
+    current_user: CurrentUser = Depends(require_permission("deliveries.view")),
+) -> list[DeliveryNote]:
+    query = db.query(DeliveryNote).options(selectinload(DeliveryNote.items))
+    query = apply_delivery_scope(query, current_user.access_context)
+    return query.all()

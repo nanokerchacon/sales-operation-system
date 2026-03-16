@@ -2,16 +2,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.api.auth import router as auth_router
 from app.api.clients import router as clients_router
 from app.api.dashboard import router as dashboard_router
 from app.api.deliveries import router as deliveries_router
 from app.api.invoices import router as invoices_router
 from app.api.operations import router as operations_router
-from app.api.risk import router as risk_router
 from app.api.orders import router as orders_router
 from app.api.products import router as products_router
+from app.api.risk import router as risk_router
 from app.api.status import router as status_router
+from app.core.config import AUTO_CREATE_SCHEMA
 from app.database.session import Base, engine
+from app.models.auth import AuthSession, ClientAssignment, Permission, Role, RolePermission, User, UserRole
 from app.models.client import Client
 from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.invoice import Invoice, InvoiceItem
@@ -34,7 +37,8 @@ app.add_middleware(
 
 @app.on_event("startup")
 def create_tables() -> None:
-    Base.metadata.create_all(bind=engine)
+    if AUTO_CREATE_SCHEMA:
+        Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
@@ -50,6 +54,7 @@ def db_test() -> dict[str, str]:
     return {"database": "connected"}
 
 
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(clients_router, prefix="/clients", tags=["clients"])
 app.include_router(dashboard_router, prefix="/dashboard", tags=["dashboard"])
 app.include_router(deliveries_router, prefix="/deliveries", tags=["deliveries"])

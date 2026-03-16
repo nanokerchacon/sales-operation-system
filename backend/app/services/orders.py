@@ -8,6 +8,7 @@ from app.models.delivery import DeliveryItem, DeliveryNote
 from app.models.invoice import Invoice, InvoiceItem
 from app.models.order import Order, OrderItem
 from app.models.product import Product
+from app.services.access_control import AccessContext, require_order_access
 from app.services.invoice_documents import (
     INVOICE_DOCUMENT_STATUS_ES,
     get_order_invoice_document_totals,
@@ -57,12 +58,6 @@ def _get_order_item_quantities(db: Session, order_item_id: int) -> tuple[float, 
     return float(delivered_quantity or 0.0), float(accepted_invoiced_quantity or 0.0)
 
 
-def _resolve_summary_status(item_statuses: list[str]) -> str:
-    if not item_statuses:
-        return "ok"
-    return min(item_statuses, key=lambda status: STATUS_PRIORITY[status])
-
-
 def _resolve_item_description(product: Product | None, order_item: OrderItem) -> str:
     if order_item.description:
         return order_item.description
@@ -73,16 +68,14 @@ def _resolve_item_description(product: Product | None, order_item: OrderItem) ->
     return ""
 
 
-def get_order_traceability(db: Session, order_id: int) -> dict[str, object]:
+def get_order_traceability(db: Session, order_id: int, access_context: AccessContext) -> dict[str, object]:
     order = db.query(Order).filter(Order.id == order_id).first()
-    if order is None:
-        raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+    require_order_access(db, access_context, order)
 
     client = db.query(Client).filter(Client.id == order.client_id).first()
     order_items = db.query(OrderItem).filter(OrderItem.order_id == order.id).all()
 
     item_rows: list[dict[str, object]] = []
-    status_candidates: list[str] = []
     total_ordered_quantity = 0.0
     total_delivered_quantity = 0.0
     total_invoiced_quantity = 0.0
@@ -116,7 +109,6 @@ def get_order_traceability(db: Session, order_id: int) -> dict[str, object]:
             }
         )
 
-        status_candidates.append(item_status)
         total_ordered_quantity += ordered_quantity
         total_delivered_quantity += delivered_quantity
         total_invoiced_quantity += invoiced_quantity
@@ -137,8 +129,6 @@ def get_order_traceability(db: Session, order_id: int) -> dict[str, object]:
         issued_quantity=total_issued_quantity,
         pending_acceptance_quantity=total_pending_acceptance_quantity,
     )
-    if not status_candidates:
-        summary_status = _resolve_summary_status(status_candidates)
 
     deliveries = (
         db.query(DeliveryNote)

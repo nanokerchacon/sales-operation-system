@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import DataTable from "../components/DataTable";
 import EmptyState from "../components/EmptyState";
 import ErrorState from "../components/ErrorState";
@@ -54,7 +55,8 @@ function buildSummaryCards(summary) {
   ];
 }
 
-export default function OrderTraceabilityPage({ orderId }) {
+export default function OrderTraceabilityPage() {
+  const { orderId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
