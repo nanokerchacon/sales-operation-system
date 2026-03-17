@@ -24,5 +24,5 @@ export default function OperationalStatusBadge({ value }) {
   const label = translateStatus(value);
   const classes = STATUS_CLASSES[value] || "border-slate-200 bg-slate-50 text-slate-700";
 
-  return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${classes}`}>{label}</span>;
+  return <span className={`inline-flex min-w-[112px] items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}>{label}</span>;
 }

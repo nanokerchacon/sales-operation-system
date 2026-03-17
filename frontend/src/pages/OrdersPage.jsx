@@ -9,7 +9,24 @@ import SectionCard from "../components/SectionCard";
 import SummaryCard from "../components/SummaryCard";
 import { ordersApi } from "../services/ordersApi";
 import { formatCurrency, formatDate, formatInteger } from "../utils/formatters";
+import { normalizeCollection } from "../utils/apiData";
 import { useAsyncData } from "../utils/useAsyncData";
+
+function normalizeOrderRows(value) {
+  return normalizeCollection(value).map((order, index) => ({
+    id: order?.id ?? `order-${index}`,
+    client_id: order?.client_id ?? null,
+    order_number: order?.order_number || `Pedido sin número ${index + 1}`,
+    client_name: order?.client_name || order?.client_name_snapshot || "Cliente no informado",
+    order_date: order?.order_date || null,
+    status: order?.status || "-",
+    total_amount: Number(order?.total_amount || 0),
+    delivery_status: order?.delivery_status || "-",
+    invoice_status: order?.invoice_status || "-",
+    hasDetailRoute: typeof order?.id === "number" || /^[0-9]+$/.test(String(order?.id || "")),
+    hasClientRoute: typeof order?.client_id === "number" || /^[0-9]+$/.test(String(order?.client_id || "")),
+  }));
+}
 
 function buildKpis(orders) {
   const totalOrders = orders.length;
@@ -44,7 +61,9 @@ function buildKpis(orders) {
 export default function OrdersPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("date_desc");
-  const { data: orders = [], loading, error } = useAsyncData(ordersApi.list, []);
+  const { data: ordersResponse, loading, error } = useAsyncData(ordersApi.list, []);
+
+  const orders = useMemo(() => normalizeOrderRows(ordersResponse), [ordersResponse]);
 
   const filteredOrders = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -52,7 +71,7 @@ export default function OrdersPage() {
       ? orders.filter((order) =>
           [order.order_number, order.client_name, order.status, order.delivery_status, order.invoice_status]
             .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedSearch)),
+            .some((value) => String(value).toLowerCase().includes(normalizedSearch)),
         )
       : orders;
 
@@ -62,10 +81,10 @@ export default function OrdersPage() {
         return Number(right.total_amount || 0) - Number(left.total_amount || 0);
       }
       if (sort === "client_asc") {
-        return left.client_name.localeCompare(right.client_name, "es");
+        return String(left.client_name || "").localeCompare(String(right.client_name || ""), "es");
       }
       if (sort === "status_asc") {
-        return left.status.localeCompare(right.status, "es");
+        return String(left.status || "").localeCompare(String(right.status || ""), "es");
       }
       return new Date(right.order_date || 0) - new Date(left.order_date || 0);
     });
@@ -87,9 +106,13 @@ export default function OrdersPage() {
       key: "client_name",
       header: "Cliente",
       render: (row) => (
-        <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-          {row.client_name}
-        </Link>
+        row.hasClientRoute ? (
+          <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+            {row.client_name}
+          </Link>
+        ) : (
+          <span className="font-medium text-slate-900">{row.client_name}</span>
+        )
       ),
     },
     {
@@ -121,14 +144,18 @@ export default function OrdersPage() {
       key: "action",
       header: "Acción",
       render: (row) => (
-        <div className="flex flex-col gap-1">
-          <Link to={`/orders/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            Abrir detalle
-          </Link>
-          <Link to={`/orders/${row.id}/traceability`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
-            Ver trazabilidad
-          </Link>
-        </div>
+        row.hasDetailRoute ? (
+          <div className="flex flex-col gap-1">
+            <Link to={`/orders/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+              Abrir detalle
+            </Link>
+            <Link to={`/orders/${row.id}/traceability`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
+              Ver trazabilidad
+            </Link>
+          </div>
+        ) : (
+          <span className="text-sm text-slate-500">Sin detalle disponible</span>
+        )
       ),
     },
   ];

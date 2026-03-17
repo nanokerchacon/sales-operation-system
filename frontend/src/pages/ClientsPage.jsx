@@ -8,7 +8,23 @@ import SectionCard from "../components/SectionCard";
 import SummaryCard from "../components/SummaryCard";
 import { clientsApi } from "../services/clientsApi";
 import { formatCurrency, formatDate, formatInteger } from "../utils/formatters";
+import { normalizeCollection } from "../utils/apiData";
 import { useAsyncData } from "../utils/useAsyncData";
+
+function normalizeClientRows(value) {
+  return normalizeCollection(value).map((client, index) => ({
+    id: client?.id ?? `client-${index}`,
+    name: client?.name || "Cliente sin nombre",
+    tax_id: client?.tax_id || "",
+    location: client?.location || client?.address || "",
+    phone: client?.phone || "",
+    email: client?.email || "",
+    order_count: Number(client?.order_count || 0),
+    total_order_amount: Number(client?.total_order_amount || 0),
+    last_order_date: client?.last_order_date || null,
+    hasDetailRoute: typeof client?.id === "number" || /^[0-9]+$/.test(String(client?.id || "")),
+  }));
+}
 
 function buildKpis(clients) {
   const totalClients = clients.length;
@@ -46,15 +62,17 @@ function buildKpis(clients) {
 export default function ClientsPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("name_asc");
-  const { data: clients = [], loading, error } = useAsyncData(clientsApi.list, []);
+  const { data: clientsResponse, loading, error } = useAsyncData(clientsApi.list, []);
+
+  const clients = useMemo(() => normalizeClientRows(clientsResponse), [clientsResponse]);
 
   const filteredClients = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
     const baseRows = normalizedSearch
       ? clients.filter((client) =>
-          [client.name, client.tax_id, client.email]
+          [client.name, client.tax_id, client.email, client.phone, client.location]
             .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedSearch)),
+            .some((value) => String(value).toLowerCase().includes(normalizedSearch)),
         )
       : clients;
 
@@ -69,7 +87,7 @@ export default function ClientsPage() {
       if (sort === "orders_desc") {
         return Number(right.order_count || 0) - Number(left.order_count || 0);
       }
-      return left.name.localeCompare(right.name, "es");
+      return String(left.name || "").localeCompare(String(right.name || ""), "es");
     });
     return rows;
   }, [clients, search, sort]);
@@ -124,12 +142,16 @@ export default function ClientsPage() {
       key: "action",
       header: "Acción",
       render: (row) => (
-        <Link
-          to={`/clients/${row.id}`}
-          className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
-        >
-          Abrir ficha
-        </Link>
+        row.hasDetailRoute ? (
+          <Link
+            to={`/clients/${row.id}`}
+            className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline"
+          >
+            Abrir ficha
+          </Link>
+        ) : (
+          <span className="text-sm text-slate-500">Sin ficha disponible</span>
+        )
       ),
     },
   ];
@@ -164,7 +186,7 @@ export default function ClientsPage() {
                   type="search"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Buscar por nombre, CIF o email"
+                  placeholder="Buscar por nombre, CIF, email, teléfono o ubicación"
                   className="w-full min-w-[260px] rounded-md border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                 />
                 <select

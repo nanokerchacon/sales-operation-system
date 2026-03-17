@@ -4,6 +4,7 @@ import RequirePermission from "./components/RequirePermission";
 import AppLayout from "./layouts/AppLayout";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import ClientsPage from "./pages/ClientsPage";
+import ControlPage from "./pages/ControlPage";
 import DashboardPage from "./pages/DashboardPage";
 import DeliveriesPage from "./pages/DeliveriesPage";
 import DeliveryDetailPage from "./pages/DeliveryDetailPage";
@@ -13,18 +14,10 @@ import IncidentsPage from "./pages/IncidentsPage";
 import InvoiceDetailPage from "./pages/InvoiceDetailPage";
 import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
-import ModulePlaceholderPage from "./pages/ModulePlaceholderPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import OrdersPage from "./pages/OrdersPage";
 import OrderTraceabilityPage from "./pages/OrderTraceabilityPage";
-
-function ProtectedModule({ permission, title, description }) {
-  return (
-    <RequirePermission permission={permission}>
-      <ModulePlaceholderPage title={title} description={description} />
-    </RequirePermission>
-  );
-}
+import ProductsPage from "./pages/ProductsPage";
 
 export default function App() {
   return (
@@ -52,8 +45,9 @@ export default function App() {
         <Route path="incidents" element={<RequirePermission permission="incidents.view"><IncidentsPage /></RequirePermission>} />
         <Route path="incidents/new" element={<RequirePermission permission="incidents.create"><IncidentNewPage /></RequirePermission>} />
         <Route path="incidents/:incidentId" element={<RequirePermission permission="incidents.view"><IncidentDetailPage /></RequirePermission>} />
-        <Route path="products" element={<ProtectedModule permission="products.view" title="Productos" description="Vista protegida del módulo de productos." />} />
-        <Route path="admin/users" element={<ProtectedModule permission="admin.view" title="Administración" description="Base preparada para usuarios, roles y asignaciones." />} />
+        <Route path="products" element={<RequirePermission permission="products.view"><ProductsPage /></RequirePermission>} />
+        <Route path="control" element={<RequirePermission permission="admin.view"><ControlPage /></RequirePermission>} />
+        <Route path="admin/users" element={<Navigate to="/control" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />

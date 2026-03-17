@@ -9,12 +9,35 @@ import SectionCard from "../components/SectionCard";
 import SummaryCard from "../components/SummaryCard";
 import { invoicesApi } from "../services/invoicesApi";
 import { formatCurrency, formatDate, formatInteger } from "../utils/formatters";
+import { normalizeCollection } from "../utils/apiData";
 import { useAsyncData } from "../utils/useAsyncData";
+
+function normalizeInvoiceRows(value) {
+  return normalizeCollection(value).map((invoice, index) => ({
+    id: invoice?.id ?? `invoice-${index}`,
+    client_id: invoice?.client_id ?? null,
+    order_id: invoice?.order_id ?? null,
+    delivery_id: invoice?.delivery_id ?? null,
+    invoice_number: invoice?.invoice_number || `Factura sin número ${index + 1}`,
+    client_name: invoice?.client_name || "Cliente no informado",
+    order_number: invoice?.order_number || "",
+    delivery_number: invoice?.delivery_number || "",
+    invoice_date: invoice?.invoice_date || invoice?.created_at || null,
+    due_date: invoice?.due_date || null,
+    status: invoice?.status || "-",
+    total_amount: Number(invoice?.total_amount || 0),
+    payment_status: invoice?.payment_status || "",
+    hasDetailRoute: typeof invoice?.id === "number" || /^[0-9]+$/.test(String(invoice?.id || "")),
+    hasClientRoute: typeof invoice?.client_id === "number" || /^[0-9]+$/.test(String(invoice?.client_id || "")),
+    hasOrderRoute: typeof invoice?.order_id === "number" || /^[0-9]+$/.test(String(invoice?.order_id || "")),
+    hasDeliveryRoute: typeof invoice?.delivery_id === "number" || /^[0-9]+$/.test(String(invoice?.delivery_id || "")),
+  }));
+}
 
 function buildKpis(invoices) {
   const totalInvoices = invoices.length;
   const totalAmount = invoices.reduce((sum, invoice) => sum + Number(invoice.total_amount || 0), 0);
-  const withDelivery = invoices.filter((invoice) => invoice.delivery_id).length;
+  const withDelivery = invoices.filter((invoice) => invoice.hasDeliveryRoute).length;
   const pendingAcceptance = invoices.filter((invoice) => invoice.status !== "accepted").length;
 
   return [
@@ -44,7 +67,9 @@ function buildKpis(invoices) {
 export default function InvoicesPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("date_desc");
-  const { data: invoices = [], loading, error } = useAsyncData(invoicesApi.list, []);
+  const { data: invoicesResponse, loading, error } = useAsyncData(invoicesApi.list, []);
+
+  const invoices = useMemo(() => normalizeInvoiceRows(invoicesResponse), [invoicesResponse]);
 
   const filteredInvoices = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -59,7 +84,7 @@ export default function InvoicesPage() {
             invoice.payment_status,
           ]
             .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedSearch)),
+            .some((value) => String(value).toLowerCase().includes(normalizedSearch)),
         )
       : invoices;
 
@@ -69,7 +94,7 @@ export default function InvoicesPage() {
         return Number(right.total_amount || 0) - Number(left.total_amount || 0);
       }
       if (sort === "client_asc") {
-        return left.client_name.localeCompare(right.client_name, "es");
+        return String(left.client_name || "").localeCompare(String(right.client_name || ""), "es");
       }
       if (sort === "status_asc") {
         return String(left.status || "").localeCompare(String(right.status || ""), "es");
@@ -85,9 +110,13 @@ export default function InvoicesPage() {
       header: "Factura",
       render: (row) => (
         <div>
-          <Link to={`/invoices/${row.id}`} className="font-semibold text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            {row.invoice_number}
-          </Link>
+          {row.hasDetailRoute ? (
+            <Link to={`/invoices/${row.id}`} className="font-semibold text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+              {row.invoice_number}
+            </Link>
+          ) : (
+            <p className="font-semibold text-slate-900">{row.invoice_number}</p>
+          )}
           <p className="text-xs text-slate-500">ID {row.id}</p>
         </div>
       ),
@@ -96,18 +125,22 @@ export default function InvoicesPage() {
       key: "client_name",
       header: "Cliente",
       render: (row) => (
-        <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-          {row.client_name}
-        </Link>
+        row.hasClientRoute ? (
+          <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+            {row.client_name}
+          </Link>
+        ) : (
+          <span className="font-medium text-slate-900">{row.client_name}</span>
+        )
       ),
     },
     {
       key: "order_number",
       header: "Pedido",
       render: (row) =>
-        row.order_id ? (
+        row.hasOrderRoute ? (
           <Link to={`/orders/${row.order_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            {row.order_number}
+            {row.order_number || `Pedido #${row.order_id}`}
           </Link>
         ) : (
           "-"
@@ -142,16 +175,20 @@ export default function InvoicesPage() {
       key: "action",
       header: "Acción",
       render: (row) => (
-        <div className="flex flex-col gap-1">
-          <Link to={`/invoices/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            Abrir detalle
-          </Link>
-          {row.delivery_id ? (
-            <Link to={`/deliveries/${row.delivery_id}`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
-              Abrir albarán
+        row.hasDetailRoute ? (
+          <div className="flex flex-col gap-1">
+            <Link to={`/invoices/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+              Abrir detalle
             </Link>
-          ) : null}
-        </div>
+            {row.hasDeliveryRoute ? (
+              <Link to={`/deliveries/${row.delivery_id}`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
+                Abrir albarán
+              </Link>
+            ) : null}
+          </div>
+        ) : (
+          <span className="text-sm text-slate-500">Sin detalle disponible</span>
+        )
       ),
     },
   ];

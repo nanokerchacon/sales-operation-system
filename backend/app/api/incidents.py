@@ -2,8 +2,21 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
-from app.schemas.incident import IncidentCreate, IncidentDetailResponse, IncidentListItem, IncidentRead, IncidentUpdate
+from app.schemas.incident import (
+    IncidentCreate,
+    IncidentDetailResponse,
+    IncidentDraftGenerateRequest,
+    IncidentDraftGenerateResponse,
+    IncidentListItem,
+    IncidentRead,
+    IncidentUpdate,
+)
 from app.services.access_control import CurrentUser, require_permission
+from app.services.ai_incidents import (
+    IncidentDraftConfigurationError,
+    IncidentDraftGenerationError,
+    generate_incident_draft,
+)
 from app.services.incidents import create_incident, get_incident_detail, list_incidents_overview, update_incident
 
 
@@ -16,6 +29,26 @@ def list_incidents(
     current_user: CurrentUser = Depends(require_permission("incidents.view")),
 ) -> list[dict[str, object]]:
     return list_incidents_overview(db, current_user.access_context)
+
+
+@router.post("/generate", response_model=IncidentDraftGenerateResponse)
+def generate_incident_draft_endpoint(
+    payload: IncidentDraftGenerateRequest,
+    current_user: CurrentUser = Depends(require_permission("incidents.create")),
+) -> IncidentDraftGenerateResponse:
+    del current_user
+
+    if not payload.text.strip():
+        raise HTTPException(status_code=400, detail="El texto no puede estar vacío.")
+
+    try:
+        return generate_incident_draft(payload.text)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except IncidentDraftConfigurationError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except IncidentDraftGenerationError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
 
 
 @router.get("/{incident_id}", response_model=IncidentDetailResponse)

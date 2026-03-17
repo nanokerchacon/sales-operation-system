@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class IncidentCreate(BaseModel):
@@ -12,6 +13,17 @@ class IncidentCreate(BaseModel):
     priority: str
     title: str
     description: str
+
+
+class IncidentDraftGenerateRequest(BaseModel):
+    text: str = Field(..., min_length=1)
+
+
+class IncidentDraftGenerateResponse(BaseModel):
+    title: str
+    description: str
+    type: Literal["documental", "logistica", "facturacion"]
+    priority: Literal["baja", "media", "alta"]
 
 
 class IncidentUpdate(BaseModel):

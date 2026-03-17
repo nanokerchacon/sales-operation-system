@@ -11,7 +11,7 @@ const PRIORITY_CLASSES = {
 export default function PriorityBadge({ value }) {
   const tone = getPriorityTone(value);
   return (
-    <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${PRIORITY_CLASSES[tone]}`}>
+    <span className={`inline-flex min-w-[84px] items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold ${PRIORITY_CLASSES[tone]}`}>
       {translateStatus(value)}
     </span>
   );

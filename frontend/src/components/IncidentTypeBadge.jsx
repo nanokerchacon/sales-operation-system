@@ -12,5 +12,5 @@ const TYPE_CLASSES = {
 
 export default function IncidentTypeBadge({ value }) {
   const classes = TYPE_CLASSES[value] || TYPE_CLASSES.otro;
-  return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${classes}`}>{translateStatus(value)}</span>;
+  return <span className={`inline-flex min-w-[110px] items-center justify-center rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}>{translateStatus(value)}</span>;
 }

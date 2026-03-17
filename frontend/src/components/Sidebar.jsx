@@ -52,9 +52,9 @@ const navigationItems = [
     roles: ["direccion_general", "comercial", "admin"],
   },
   {
-    key: "admin",
-    label: "Administración",
-    to: "/admin/users",
+    key: "control",
+    label: "Control",
+    to: "/control",
     permission: "admin.view",
     roles: ["direccion_general", "admin"],
   },
@@ -81,7 +81,7 @@ export default function Sidebar() {
     <aside className="flex min-h-screen w-[272px] flex-col border-r border-slate-800 bg-slate-950 text-slate-100">
       <div className="border-b border-slate-800 px-6 py-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-md border border-slate-800 bg-slate-900">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 shadow-inner">
             <img
               src="/logo/logo-icono-white-removebg.png"
               alt="Nanoker ERP"
@@ -97,7 +97,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 px-4 py-6">
         <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.26em] text-slate-500">
-          Navegación
+          Navegacion
         </p>
         <ul className="mt-4 space-y-1.5">
           {visibleItems.map((item) => (
@@ -106,18 +106,19 @@ export default function Sidebar() {
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    "flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm font-medium transition-colors",
+                    "group relative flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium transition-all duration-150",
                     isActive
-                      ? "bg-slate-900 text-white shadow-soft"
+                      ? "bg-slate-900 text-white shadow-soft ring-1 ring-slate-800"
                       : "text-slate-400 hover:bg-slate-900/70 hover:text-slate-100",
                   ].join(" ")
                 }
               >
                 {({ isActive }) => (
                   <>
+                    <span className={["absolute left-0 top-2 bottom-2 w-1 rounded-r-full transition-opacity", isActive ? "bg-cyan-400 opacity-100" : "opacity-0 group-hover:opacity-40 bg-slate-500"].join(" ")} />
                     <span
                       className={[
-                        "flex h-9 w-9 items-center justify-center rounded-md border",
+                        "flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
                         isActive
                           ? "border-slate-700 bg-slate-800 text-slate-100"
                           : "border-slate-800 bg-slate-900 text-slate-500",
@@ -126,7 +127,7 @@ export default function Sidebar() {
                       <GridIcon />
                     </span>
                     <span className="flex-1">{item.label}</span>
-                    {isActive ? <span className="h-2 w-2 rounded-full bg-slate-300" /> : null}
+                    {isActive ? <span className="h-2.5 w-2.5 rounded-full bg-cyan-300" /> : null}
                   </>
                 )}
               </NavLink>
@@ -136,10 +137,10 @@ export default function Sidebar() {
       </nav>
 
       <div className="border-t border-slate-800 px-6 py-5">
-        <div className="rounded-md border border-slate-800 bg-slate-900/70 px-4 py-4">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-4">
           <p className="text-xs uppercase tracking-[0.22em] text-slate-500">Estado del sistema</p>
-          <p className="mt-2 text-sm font-semibold text-slate-100">Sesión protegida activa</p>
-          <p className="mt-1 text-sm text-slate-400">Navegación y acceso filtrados por rol y permisos.</p>
+          <p className="mt-2 text-sm font-semibold text-slate-100">Sesion protegida activa</p>
+          <p className="mt-1 text-sm leading-6 text-slate-400">Navegacion y acceso filtrados por rol y permisos.</p>
         </div>
       </div>
     </aside>

@@ -9,12 +9,31 @@ import SectionCard from "../components/SectionCard";
 import SummaryCard from "../components/SummaryCard";
 import { deliveriesApi } from "../services/deliveriesApi";
 import { formatCurrency, formatDate, formatInteger } from "../utils/formatters";
+import { normalizeCollection } from "../utils/apiData";
 import { useAsyncData } from "../utils/useAsyncData";
+
+function normalizeDeliveryRows(value) {
+  return normalizeCollection(value).map((delivery, index) => ({
+    id: delivery?.id ?? `delivery-${index}`,
+    order_id: delivery?.order_id ?? null,
+    client_id: delivery?.client_id ?? null,
+    delivery_number: delivery?.delivery_number || `Albarán sin número ${index + 1}`,
+    client_name: delivery?.client_name || "Cliente no informado",
+    order_number: delivery?.order_number || "",
+    delivery_date: delivery?.delivery_date || delivery?.created_at || null,
+    status: delivery?.status || "-",
+    total_amount: Number(delivery?.total_amount || 0),
+    invoice_status: delivery?.invoice_status || "-",
+    hasDetailRoute: typeof delivery?.id === "number" || /^[0-9]+$/.test(String(delivery?.id || "")),
+    hasClientRoute: typeof delivery?.client_id === "number" || /^[0-9]+$/.test(String(delivery?.client_id || "")),
+    hasOrderRoute: typeof delivery?.order_id === "number" || /^[0-9]+$/.test(String(delivery?.order_id || "")),
+  }));
+}
 
 function buildKpis(deliveries) {
   const totalDeliveries = deliveries.length;
   const totalAmount = deliveries.reduce((sum, delivery) => sum + Number(delivery.total_amount || 0), 0);
-  const linkedOrders = deliveries.filter((delivery) => delivery.order_id).length;
+  const linkedOrders = deliveries.filter((delivery) => delivery.hasOrderRoute).length;
   const pendingInvoice = deliveries.filter((delivery) => delivery.invoice_status !== "invoice_accepted").length;
 
   return [
@@ -44,7 +63,9 @@ function buildKpis(deliveries) {
 export default function DeliveriesPage() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("date_desc");
-  const { data: deliveries = [], loading, error } = useAsyncData(deliveriesApi.list, []);
+  const { data: deliveriesResponse, loading, error } = useAsyncData(deliveriesApi.list, []);
+
+  const deliveries = useMemo(() => normalizeDeliveryRows(deliveriesResponse), [deliveriesResponse]);
 
   const filteredDeliveries = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -58,7 +79,7 @@ export default function DeliveriesPage() {
             delivery.invoice_status,
           ]
             .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(normalizedSearch)),
+            .some((value) => String(value).toLowerCase().includes(normalizedSearch)),
         )
       : deliveries;
 
@@ -68,7 +89,7 @@ export default function DeliveriesPage() {
         return Number(right.total_amount || 0) - Number(left.total_amount || 0);
       }
       if (sort === "client_asc") {
-        return left.client_name.localeCompare(right.client_name, "es");
+        return String(left.client_name || "").localeCompare(String(right.client_name || ""), "es");
       }
       if (sort === "invoice_asc") {
         return String(left.invoice_status || "").localeCompare(String(right.invoice_status || ""), "es");
@@ -84,9 +105,13 @@ export default function DeliveriesPage() {
       header: "Albarán",
       render: (row) => (
         <div>
-          <Link to={`/deliveries/${row.id}`} className="font-semibold text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            {row.delivery_number}
-          </Link>
+          {row.hasDetailRoute ? (
+            <Link to={`/deliveries/${row.id}`} className="font-semibold text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+              {row.delivery_number}
+            </Link>
+          ) : (
+            <p className="font-semibold text-slate-900">{row.delivery_number}</p>
+          )}
           <p className="text-xs text-slate-500">ID {row.id}</p>
         </div>
       ),
@@ -95,18 +120,22 @@ export default function DeliveriesPage() {
       key: "client_name",
       header: "Cliente",
       render: (row) => (
-        <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-          {row.client_name}
-        </Link>
+        row.hasClientRoute ? (
+          <Link to={`/clients/${row.client_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+            {row.client_name}
+          </Link>
+        ) : (
+          <span className="font-medium text-slate-900">{row.client_name}</span>
+        )
       ),
     },
     {
       key: "order_number",
       header: "Pedido",
       render: (row) =>
-        row.order_id ? (
+        row.hasOrderRoute ? (
           <Link to={`/orders/${row.order_id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            {row.order_number}
+            {row.order_number || `Pedido #${row.order_id}`}
           </Link>
         ) : (
           "-"
@@ -131,16 +160,20 @@ export default function DeliveriesPage() {
       key: "action",
       header: "Acción",
       render: (row) => (
-        <div className="flex flex-col gap-1">
-          <Link to={`/deliveries/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
-            Abrir detalle
-          </Link>
-          {row.order_id ? (
-            <Link to={`/orders/${row.order_id}`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
-              Abrir pedido
+        row.hasDetailRoute ? (
+          <div className="flex flex-col gap-1">
+            <Link to={`/deliveries/${row.id}`} className="font-medium text-slate-900 underline-offset-2 hover:text-slate-700 hover:underline">
+              Abrir detalle
             </Link>
-          ) : null}
-        </div>
+            {row.hasOrderRoute ? (
+              <Link to={`/orders/${row.order_id}`} className="text-xs text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline">
+                Abrir pedido
+              </Link>
+            ) : null}
+          </div>
+        ) : (
+          <span className="text-sm text-slate-500">Sin detalle disponible</span>
+        )
       ),
     },
   ];
